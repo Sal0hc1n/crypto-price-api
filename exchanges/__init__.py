@@ -11,21 +11,23 @@ from exchanges.poloniex import Poloniex
 from exchanges.bravenewcoin import BraveNewCoin
 from exchanges.gatecoin import GateCoin
 from exchanges.cexio import CexIO
+from exchanges.bitbay import BitBay
 
 exchange_list = {
     'bitfinex' : Bitfinex,
     'bitstamp' : Bitstamp,
+    'bitbay' : BitBay,
 #    'bitvc' : BitVc,
     'cex.io' : CexIO,
     'coinapult' : Coinapult,
-    'coindesk' : CoinDesk,
+#    'coindesk' : CoinDesk,
 #    'futures796' : Futures796,
 #    'huobi' : Huobi,
     'kraken' : Kraken,
     'okcoin' : OKCoin,
 #    'okcoin_futures' : OKCoinFutures,
     'poloniex' : Poloniex,
-    'bravenewcoin' : BraveNewCoin,
+#    'bravenewcoin' : BraveNewCoin,
     'gatecoin' : GateCoin
 }
 

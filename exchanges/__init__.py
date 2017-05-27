@@ -12,6 +12,7 @@ from exchanges.bravenewcoin import BraveNewCoin
 from exchanges.gatecoin import GateCoin
 from exchanges.cexio import CexIO
 from exchanges.bitbay import BitBay
+from exchanges.hitbtc import HitBTC
 
 exchange_list = {
     'bitfinex' : Bitfinex,
@@ -23,6 +24,7 @@ exchange_list = {
 #    'coindesk' : CoinDesk,
 #    'futures796' : Futures796,
 #    'huobi' : Huobi,
+    'hitbtc' : HitBTC,
     'kraken' : Kraken,
     'okcoin' : OKCoin,
 #    'okcoin_futures' : OKCoinFutures,

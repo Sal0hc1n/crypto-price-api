@@ -13,11 +13,13 @@ from exchanges.gatecoin import GateCoin
 from exchanges.cexio import CexIO
 from exchanges.bitbay import BitBay
 from exchanges.hitbtc import HitBTC
+from exchanges.bittrex import Bittrex
 
 exchange_list = {
     'bitfinex' : Bitfinex,
     'bitstamp' : Bitstamp,
     'bitbay' : BitBay,
+    'bittrex' : Bittrex,
 #    'bitvc' : BitVc,
     'cex.io' : CexIO,
     'coinapult' : Coinapult,

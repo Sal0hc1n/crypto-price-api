@@ -9,6 +9,7 @@ from exchanges.kraken import Kraken
 from exchanges.okcoin import OKCoin, OKCoinFutures
 from exchanges.poloniex import Poloniex
 from exchanges.bravenewcoin import BraveNewCoin
+from exchanges.gatecoin import GateCoin
 
 exchange_list = {
     'bitfinex' : Bitfinex,
@@ -22,7 +23,8 @@ exchange_list = {
     'okcoin' : OKCoin,
     'okcoin_futures' : OKCoinFutures,
     'poloniex' : Poloniex,
-    'bravenewcoin' : BraveNewCoin
+    'bravenewcoin' : BraveNewCoin,
+    'gatecoin' : GateCoin
 }
 
 def get_exchange(s, *args, **kwargs):

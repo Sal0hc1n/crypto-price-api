@@ -10,18 +10,20 @@ from exchanges.okcoin import OKCoin, OKCoinFutures
 from exchanges.poloniex import Poloniex
 from exchanges.bravenewcoin import BraveNewCoin
 from exchanges.gatecoin import GateCoin
+from exchanges.cexio import CexIO
 
 exchange_list = {
     'bitfinex' : Bitfinex,
     'bitstamp' : Bitstamp,
-    'bitvc' : BitVc,
+#    'bitvc' : BitVc,
+    'cex.io' : CexIO,
     'coinapult' : Coinapult,
     'coindesk' : CoinDesk,
-    'futures796' : Futures796,
-    'huobi' : Huobi,
+#    'futures796' : Futures796,
+#    'huobi' : Huobi,
     'kraken' : Kraken,
     'okcoin' : OKCoin,
-    'okcoin_futures' : OKCoinFutures,
+#    'okcoin_futures' : OKCoinFutures,
     'poloniex' : Poloniex,
     'bravenewcoin' : BraveNewCoin,
     'gatecoin' : GateCoin

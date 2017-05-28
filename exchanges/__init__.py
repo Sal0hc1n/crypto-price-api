@@ -3,7 +3,6 @@ from exchanges.bitfinex import Bitfinex
 from exchanges.bitstamp import Bitstamp
 from exchanges.bittrex import Bittrex
 from exchanges.cexio import CexIO
-from exchanges.coinapult import Coinapult
 from exchanges.gatecoin import GateCoin
 from exchanges.hitbtc import HitBTC
 from exchanges.kraken import Kraken
@@ -16,7 +15,6 @@ exchange_list = {
     'bitstamp' : Bitstamp,
     'bittrex' : Bittrex,
     'cex.io' : CexIO,
-    'coinapult' : Coinapult,
     'hitbtc' : HitBTC,
     'kraken' : Kraken,
     'okcoin' : OKCoin,
@@ -45,17 +43,27 @@ def get_underlyings_list():
     for exchange in get_exchanges_list():
         if not set(get_exchange(exchange).get_supported_underlyings()).issubset(set(underlying_list)):
             underlying_list += get_exchange(exchange).get_supported_underlyings()
-    return underlying_list
+    return list(set(underlying_list))
 
-def get_last_price_all():
-    for exchange in get_exchanges_list():
+def get_all_quotes(underlyingList = []):
+    if underlyingList == []:
+        exchangeList = get_exchanges_list()
+    else:
+        exchangeList = []
+        for underlying in underlyingList:
+            exchangeList += get_exchanges_list_for_underlying(underlying)
+        exchangeList = list(set(exchangeList))
+    for exchange in exchangeList:
         e = get_exchange(exchange)
         if e.get_supported_underlyings() == []:
             print("%s has no supported underlyings" % exchange)
         else:
-            for underlying in e.get_supported_underlyings():
-                last = e.get_last_price(underlying)
-                bid = e.get_current_bid(underlying)
-                ask = e.get_current_ask(underlying)
+            if underlyingList == []:
+                underlyingList = e.get_supported_underlyngs()
+            for underlying in underlyingList:
+                last = e.get_quote(underlying, 'last')
+                bid = e.get_quote(underlying, 'bid')
+                ask = e.get_quote(underlying, 'ask')
                 print("%s on %s: BID: %.2f, ASK: %.2f, LAST: %.2f" % \
                       (underlying, exchange, bid, ask, last))
+

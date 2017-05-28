@@ -1,19 +1,20 @@
 from exchanges.base import Exchange
 
-
 class Poloniex(Exchange):
 
     TICKER_URL = 'https://poloniex.com/public?command=returnTicker'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD']
+    SUPPORTED_UNDERLYINGS = ['BTCUSD', 'ETHBTC', 'XRPBTC']
+    UNDERLYING_DICT = {
+        'BTCUSD' : 'USDT_BTC',
+        'ETHBTC' : 'BTC_ETH',
+        'XRPBTC' : 'BTC_XRP'
+    }
+    QUOTE_DICT = {
+        'bid' : 'highestBid',
+        'ask' : 'lowestAsk',
+        'last' : 'last'
+    }
 
     @classmethod
-    def _last_price_extractor(cls, data, underlying):
-        return data.get('USDT_BTC').get('last')
-
-    @classmethod
-    def _current_bid_extractor(cls, data, underlying):
-        return data.get('USDT_BTC').get('highestBid')
-
-    @classmethod
-    def _current_ask_extractor(cls, data, underlying):
-        return data.get('USDT_BTC').get('lowestAsk')
+    def _quote_extractor(cls, data, underlying, quote):
+        return data.get(cls.UNDERLYING_DICT[underlying]).get(cls.QUOTE_DICT[quote])

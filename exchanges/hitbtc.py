@@ -1,19 +1,15 @@
 from exchanges.base import Exchange
 
-
 class HitBTC(Exchange):
 
-    TICKER_URL = 'https://api.hitbtc.com/api/1/public/BTCUSD/ticker'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD']
+    TICKER_URL = 'https://api.hitbtc.com/api/1/public/%s/ticker'
+    SUPPORTED_UNDERLYINGS = ['BTCUSD', 'BTCEUR', 'ETHBTC']
+    UNDERLYING_DICT = {
+        'BTCUSD' : 'BTCUSD',
+        'BTCEUR' : 'BTCEUR',
+        'ETHBTC' : 'ETHBTC'
+    }
 
     @classmethod
-    def _last_price_extractor(cls, data, underlying):
-        return data.get('last')
-
-    @classmethod
-    def _current_bid_extractor(cls, data, underlying):
-        return data.get('bid')
-
-    @classmethod
-    def _current_ask_extractor(cls, data, underlying):
-        return data.get('ask')
+    def _quote_extractor(cls, data, underlying, quote):
+        return data.get(cls.QUOTE_DICT[quote])

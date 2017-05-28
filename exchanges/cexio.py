@@ -1,19 +1,14 @@
 from exchanges.base import Exchange
 
-
 class CexIO(Exchange):
 
-    TICKER_URL = 'https://cex.io/api/ticker/BTC/USD'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD']
+    TICKER_URL = 'https://cex.io/api/ticker/%s'
+    SUPPORTED_UNDERLYINGS = ['BTCUSD', 'BTCEUR']
+    UNDERLYING_DICT = {
+        'BTCUSD' : 'BTC/USD',
+        'BTCEUR' : 'BTC/EUR'
+    }
 
     @classmethod
-    def _last_price_extractor(cls, data, underlying):
-        return data.get('last')
-
-    @classmethod
-    def _current_bid_extractor(cls, data, underlying):
-        return data.get('bid')
-
-    @classmethod
-    def _current_ask_extractor(cls, data, underlying):
-        return data.get('ask')
+    def _quote_extractor(cls, data, underlying, quote):
+        return data.get(cls.QUOTE_DICT[quote])

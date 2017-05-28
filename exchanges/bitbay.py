@@ -1,19 +1,15 @@
 from exchanges.base import Exchange
 
-
 class BitBay(Exchange):
 
-    TICKER_URL = 'https://bitbay.net/API/Public/BTCUSD/ticker.json'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD']
+    TICKER_URL = 'https://bitbay.net/API/Public/%s/ticker.json'
+    SUPPORTED_UNDERLYINGS = ['BTCUSD', 'BTCEUR', 'ETHBTC']
+    UNDERLYING_DICT = {
+        'BTCUSD' : 'BTCUSD',
+        'BTCEUR' : 'BTCEUR',
+        'ETHBTC' : 'ETHBTC'
+    }
 
     @classmethod
-    def _last_price_extractor(cls, data, underlying):
-        return data.get('last')
-
-    @classmethod
-    def _current_bid_extractor(cls, data, underlying):
-        return data.get('bid')
-
-    @classmethod
-    def _current_ask_extractor(cls, data, underlying):
-        return data.get('ask')
+    def _quote_extractor(cls, data, underlying, quote):
+        return data.get(cls.QUOTE_DICT[quote])

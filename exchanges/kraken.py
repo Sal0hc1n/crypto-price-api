@@ -1,29 +1,20 @@
-from decimal import Decimal
-
 from exchanges.base import Exchange
-from exchanges.helpers import get_response
-
 
 class Kraken(Exchange):
 
-    TICKER_URL = 'https://api.kraken.com/0/public/Trades?pair=%s'
-    DEPTH_URL = 'https://api.kraken.com/0/public/Depth?pair=%s'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD']
+    TICKER_URL = 'https://api.kraken.com/0/public/Ticker?pair=%s'
+    SUPPORTED_UNDERLYINGS = ['BTCUSD', 'BTCEUR', 'ETHBTC']
+    UNDERLYING_DICT = {
+        'BTCUSD' : 'XXBTZUSD',
+        'BTCEUR' : 'XXBTZEUR',
+        'ETHBTC' : 'XETHXXBT'
+    }
+    QUOTE_DICT = {
+        'ask' : 'a',
+        'bid' : 'b',
+        'last' : 'c'
+    }
 
     @classmethod
-    def get_last_price(cls, underlying):
-        data = get_response(cls.TICKER_URL %  'XXBTZUSD')
-        price = data['result']['XXBTZUSD'][-1][0]
-        return Decimal(str(price))
-
-    @classmethod
-    def get_current_bid(cls, underlying):
-        data = get_response(cls.DEPTH_URL % 'XXBTZUSD')
-        price = data['result']['XXBTZUSD']['bids'][0][0]
-        return Decimal(str(price))
-
-    @classmethod
-    def get_current_ask(cls, underlying):
-        data = get_response(cls.DEPTH_URL % 'XXBTZUSD')
-        price = data['result']['XXBTZUSD']['asks'][0][0]
-        return Decimal(str(price))
+    def _quote_extractor(cls, data, underlying, quote):
+        return data.get('result').get(cls.UNDERLYING_DICT[underlying]).get(cls.QUOTE_DICT[quote])[0]

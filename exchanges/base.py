@@ -38,55 +38,49 @@ class ExchangeBase(object):
 
     TICKER_URL = None
     SUPPORTED_UNDERLYINGS = []
+    UNDERLYING_DICT = {}
+    SUPPORTED_QUOTES = ['bid', 'ask', 'last']
+    QUOTE_DICT = {
+        'bid' : 'bid',
+        'ask' : 'ask',
+        'last' : 'last'
+    }
 
     def __init__(self, *args, **kwargs):
         self.data = None
         self.ticker_url = self.TICKER_URL
         self.supported_underlyings = self.SUPPORTED_UNDERLYINGS
+        self.underlying_dict = self.UNDERLYING_DICT
+        self.supported_quotes = self.SUPPORTED_QUOTES
+        self.quote_dict = self.QUOTE_DICT
 
-    def get_data(self):
-        if self.data == None:
-            self.refresh()
+    def get_data(self, underlying):
+        self.refresh(underlying)
 
-    def refresh(self, callback=None, client_data=None):
-        self.data = get_response(self.ticker_url)
+    def refresh(self, underlying, callback=None, client_data=None):
+        if '%s' in self.ticker_url:
+            requesturl = self.ticker_url % self.underlying_dict[underlying]
+        else:
+            requesturl = self.ticker_url
+        self.data = get_response(requesturl)
         if callback is not None:
             callback(self, client_data)
 
 class Exchange(ExchangeBase):
 
-    def _last_price_extractor(self, data, underlying):
+    def _quote_extractor(self, data, underlying, quote):
         raise NotImplementedError
 
-    def _current_bid_extractor(self, data, underlying):
-        raise NotImplementedError
-
-    def _current_ask_extractor(self, data, underlying):
-        raise NotImplementedError
-
-    def get_current_data(self, underlying):
-        return {'last': self.get_last_price(underlying),
-                'bid' : self.get_current_bid(underlying),
-                'ask' : self.get_current_ask(underlying)}
-
-    def get_last_price(self, underlying):
-        self.get_data()
-        price = self._last_price_extractor(self.data, underlying)
-        return Decimal(price)
-
-    def get_current_bid(self, underlying):
-        self.get_data()
-        price = self._current_bid_extractor(self.data, underlying)
-        return Decimal(price)
-
-    def get_current_ask(self, underlying):
-        self.get_data()
-        price = self._current_ask_extractor(self.data, underlying)
-        return Decimal(price)
+    def get_quote(self, underlying, quote):
+        self.get_data(underlying)
+        quote = self._quote_extractor(self.data, underlying, quote)
+        return Decimal(quote)
 
     def get_supported_underlyings(self):
         return self.supported_underlyings
 
+    def get_supported_quotes(self):
+        return self.supported_quotes
 
 class FuturesExchange(ExchangeBase):
 

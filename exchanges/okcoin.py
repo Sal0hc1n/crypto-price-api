@@ -12,18 +12,16 @@ class OKCoin(Exchange):
 
     TICKER_URL = 'https://www.okcoin.com/api/ticker.do?ok=1'
     SUPPORTED_UNDERLYINGS = ['BTCUSD']
+    UNDERLYING_DICT = { 'BTCUSD' : 'BTCUSD' }
+    QUOTE_DICT = {
+        'bid' : 'buy',
+        'ask' : 'sell',
+        'last' : 'last'
+    }
 
     @classmethod
-    def _last_price_extractor(cls, data, underlying):
-        return data.get('ticker', {}).get('last')
-
-    @classmethod
-    def _current_bid_extractor(cls, data, underlying):
-        return data.get('ticker', {}).get('buy')
-
-    @classmethod
-    def _current_ask_extractor(cls, data, underlying):
-        return data.get('ticker', {}).get('sell')
+    def _quote_extractor(cls, data, underlying, quote):
+        return data.get('ticker', {}).get(cls.QUOTE_DICT[quote])
 
 class OKCoinFutures(Exchange):
 

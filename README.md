@@ -26,10 +26,8 @@ See test.py for some use cases. Call exchanges.get_exchanges_list() to get a lis
 
 All of these classes expose the interface below:
 
-    get_last_price('BTCUSD')
-    get_current_bid('BTCUSD')
-    get_current_ask('BTCUSD')
+    get_supported_quotes() # returns ['bid', 'ask', 'last'] currently. all exchange classes implement these 3 quotes    
+    get_supported_underlyings() # returns a list of currency pairs supported in each exchange class    
+    get_quote('BTCUSD', 'bid') # returns the btcusd bid on current exchange
+    It will return a `Decimal` object.
 
-which will return a `Decimal` object.
-
-The list of underlyings that an exchange supports can be called from exchanges.get_exchange('gatecoin').get_supported_underlyings()

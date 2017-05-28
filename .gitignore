@@ -3,4 +3,4 @@
 .DS_Store
 build
 dist
-bitcoin_price_api.egg-info
+*.egg-info

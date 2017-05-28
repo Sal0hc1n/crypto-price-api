@@ -1,7 +1,7 @@
-Bitcoin Price API
+CryptoCurrencies Price API
 ----------------------------------------------------------------------
 
-If you are trying to do interesting things with bitcoin price data,
+If you are trying to do interesting things with crypto-currency price data,
 you shouldn't have to be concerned with the low-level details of how
 to obtain that data, or the particular JSON structures that it comes in.
 This module will provide a unified way of getting price data from various
@@ -11,7 +11,7 @@ representation of that data rather than exchange specific ones.
 ### Quick Guide
 
         >>> from exchanges.bitfinex import Bitfinex
-        >>> Bitfinex().get_current_price()
+        >>> Bitfinex().get_current_price('BTCUSD')
         Decimal('371.17')
 
 ### Dependencies

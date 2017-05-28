@@ -11,19 +11,19 @@ from exchanges.helpers import get_response, get_datetime
 class OKCoin(Exchange):
 
     TICKER_URL = 'https://www.okcoin.com/api/ticker.do?ok=1'
+    SUPPORTED_UNDERLYINGS = ['BTCUSD']
 
     @classmethod
-    def _current_price_extractor(cls, data):
+    def _last_price_extractor(cls, data, underlying):
         return data.get('ticker', {}).get('last')
 
     @classmethod
-    def _current_bid_extractor(cls, data):
+    def _current_bid_extractor(cls, data, underlying):
         return data.get('ticker', {}).get('buy')
 
     @classmethod
-    def _current_ask_extractor(cls, data):
+    def _current_ask_extractor(cls, data, underlying):
         return data.get('ticker', {}).get('sell')
-
 
 class OKCoinFutures(Exchange):
 

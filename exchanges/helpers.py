@@ -2,7 +2,6 @@ from datetime import datetime
 
 import requests
 
-
 def get_datetime():
     return datetime.now().strftime('%Y-%m-%d')
 

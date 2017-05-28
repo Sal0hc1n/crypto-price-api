@@ -1,2 +1,6 @@
 *.pyc
+*.py.swp
 .DS_Store
+build
+dist
+bitcoin_price_api.egg-info

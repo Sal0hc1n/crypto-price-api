@@ -37,10 +37,12 @@ def time_stamp(d):
 class ExchangeBase(object):
 
     TICKER_URL = None
+    SUPPORTED_UNDERLYINGS = []
 
     def __init__(self, *args, **kwargs):
         self.data = None
         self.ticker_url = self.TICKER_URL
+        self.supported_underlyings = self.SUPPORTED_UNDERLYINGS
 
     def get_data(self):
         if self.data == None:
@@ -53,34 +55,37 @@ class ExchangeBase(object):
 
 class Exchange(ExchangeBase):
 
-    def _current_price_extractor(self, data):
+    def _last_price_extractor(self, data, underlying):
         raise NotImplementedError
 
-    def _current_bid_extractor(self, data):
+    def _current_bid_extractor(self, data, underlying):
         raise NotImplementedError
 
-    def _current_ask_extractor(self, data):
+    def _current_ask_extractor(self, data, underlying):
         raise NotImplementedError
 
-    def get_current_data(self):
-        return {'last': self.get_current_price(),
-                'bid' : self.get_current_bid(),
-                'ask' : self.get_current_ask()}
+    def get_current_data(self, underlying):
+        return {'last': self.get_last_price(underlying),
+                'bid' : self.get_current_bid(underlying),
+                'ask' : self.get_current_ask(underlying)}
 
-    def get_current_price(self):
+    def get_last_price(self, underlying):
         self.get_data()
-        price = self._current_price_extractor(self.data)
+        price = self._last_price_extractor(self.data, underlying)
         return Decimal(price)
 
-    def get_current_bid(self):
+    def get_current_bid(self, underlying):
         self.get_data()
-        price = self._current_bid_extractor(self.data)
+        price = self._current_bid_extractor(self.data, underlying)
         return Decimal(price)
 
-    def get_current_ask(self):
+    def get_current_ask(self, underlying):
         self.get_data()
-        price = self._current_ask_extractor(self.data)
+        price = self._current_ask_extractor(self.data, underlying)
         return Decimal(price)
+
+    def get_supported_underlyings(self):
+        return self.supported_underlyings
 
 
 class FuturesExchange(ExchangeBase):

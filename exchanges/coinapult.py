@@ -13,29 +13,34 @@ class Coinapult(object):
         (2500, 'vip'),
         (5000, 'vip+')
     ]
+    SUPPORTED_UNDERLYINGS=['BTCUSD']
 
     @classmethod
-    def get_current_price(cls, currency='USD'):
-        url = cls.TICKER_URL.format(currency)
+    def get_last_price(cls, underlying):
+        url = cls.TICKER_URL.format('USD')
         data = get_response(url)
         price = str(data['index'])
         return Decimal(price)
 
     @classmethod
-    def get_current_bid(cls, currency='USD', btc_amount=0.1):
-        url = cls.TICKER_URL.format(currency)
+    def get_current_bid(cls, underlying, btc_amount=0.1):
+        url = cls.TICKER_URL.format('USD')
         data = get_response(url)
         level = cls._pick_level(btc_amount) if btc_amount > 0 else 'small'
         price = str(data[level]['bid'])
         return Decimal(price)
 
     @classmethod
-    def get_current_ask(cls, currency='USD', btc_amount=0.1):
-        url = cls.TICKER_URL.format(currency)
+    def get_current_ask(cls, underlying, btc_amount=0.1):
+        url = cls.TICKER_URL.format('USD')
         data = get_response(url)
         level = cls._pick_level(btc_amount) if btc_amount > 0 else 'small'
         price = str(data[level]['ask'])
         return Decimal(price)
+
+    @classmethod
+    def get_supported_underlyings(cls):
+        return cls.SUPPORTED_UNDERLYINGS
 
     @classmethod
     def _pick_level(cls, btc_amount):

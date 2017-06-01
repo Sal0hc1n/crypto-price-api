@@ -26,10 +26,10 @@ See test.py for some use cases. Call exchanges.get_exchanges_list() to get a lis
 
 All of these classes expose the interface below:
 
-        >>> import exchanges
+	>>> import exchanges
 	>>> exchanges.get_exchange('gatecoin').get_supported_quotes()
 	['bid', 'ask', 'last']	
 	>>> exchanges.get_exchange('gatecoin').get_supported_underlyings()
 	['BTCUSD', 'BTCEUR', 'ETHBTC']
-    	>>> exchanges.get_exchange('bitstamp').get_quote('BTCUSD', 'ask')
+	>>> exchanges.get_exchange('bitstamp').get_quote('BTCUSD', 'ask')
 	Decimal('2445.05')

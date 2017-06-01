@@ -20,11 +20,11 @@ The only dependency is on the `requests` library. You can either
 do `pip install requests` or `pip install -r requirements.txt` inside the
 directory.
 
-### Various exchanges
+### Examples
 
 See test.py for some use cases. Call exchanges.get_exchanges_list() to get a list of supported exchanges.
 
-All of these classes expose the interface below:
+All of the Exchange classes expose the interface below:
 
 	>>> import exchanges
 	>>> exchanges.get_exchange('gatecoin').get_supported_quotes()
@@ -33,3 +33,5 @@ All of these classes expose the interface below:
 	['BTCUSD', 'BTCEUR', 'ETHBTC']
 	>>> exchanges.get_exchange('bitstamp').get_quote('BTCUSD', 'ask')
 	Decimal('2445.05')
+
+A simple Telegram bot using this API is also included in example folder

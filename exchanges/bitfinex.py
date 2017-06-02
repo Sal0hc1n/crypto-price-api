@@ -7,7 +7,8 @@ class Bitfinex(Exchange):
     UNDERLYING_DICT = {
         'BTCUSD' : 'btcusd',
         'ETHBTC' : 'ethbtc',
-        'XRPBTC' : 'xrpbtc'
+        'XRPBTC' : 'xrpbtc',
+        'ETHUSD' : 'ethusd'
     }
     QUOTE_DICT = {
         'last' : 'last_price',
@@ -17,16 +18,6 @@ class Bitfinex(Exchange):
 
     @classmethod
     def _quote_extractor(cls, data, underlying, quote):
-        return data.get(cls.QUOTE_DICT[quote])
+        return data.get(cls.quote_dict[quote])
 
-    @classmethod
-    def _last_price_extractor(cls, data, underlying):
-        return data.get('last_price')
 
-    @classmethod
-    def _current_bid_extractor(cls, data, underlying):
-        return data.get('bid')
-
-    @classmethod
-    def _current_ask_extractor(cls, data, underlying):
-        return data.get('ask')

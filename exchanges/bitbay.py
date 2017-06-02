@@ -3,7 +3,6 @@ from exchanges.base import Exchange
 class BitBay(Exchange):
 
     TICKER_URL = 'https://bitbay.net/API/Public/%s/ticker.json'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD', 'BTCEUR', 'ETHBTC']
     UNDERLYING_DICT = {
         'BTCUSD' : 'BTCUSD',
         'BTCEUR' : 'BTCEUR',

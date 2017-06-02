@@ -39,7 +39,6 @@ class ExchangeBase(object):
     TICKER_URL = None
     SUPPORTED_UNDERLYINGS = []
     UNDERLYING_DICT = {}
-    SUPPORTED_QUOTES = ['bid', 'ask', 'last']
     QUOTE_DICT = {
         'bid' : 'bid',
         'ask' : 'ask',
@@ -49,9 +48,7 @@ class ExchangeBase(object):
     def __init__(self, *args, **kwargs):
         self.data = None
         self.ticker_url = self.TICKER_URL
-        self.supported_underlyings = self.SUPPORTED_UNDERLYINGS
         self.underlying_dict = self.UNDERLYING_DICT
-        self.supported_quotes = self.SUPPORTED_QUOTES
         self.quote_dict = self.QUOTE_DICT
 
     def get_data(self, underlying):
@@ -77,10 +74,10 @@ class Exchange(ExchangeBase):
         return Decimal(quote)
 
     def get_supported_underlyings(self):
-        return self.supported_underlyings
+        return sorted(self.underlying_dict.keys())
 
     def get_supported_quotes(self):
-        return self.supported_quotes
+        return sorted(self.quote_dict.keys())
 
 class FuturesExchange(ExchangeBase):
 

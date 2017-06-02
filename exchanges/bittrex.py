@@ -3,7 +3,6 @@ from exchanges.base import Exchange
 class Bittrex(Exchange):
 
     TICKER_URL = 'https://bittrex.com/api/v1.1/public/getticker?market=%s'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD','ETHBTC']
     UNDERLYING_DICT = {
         'BTCUSD' : 'USDT-BTC',
         'ETHBTC' : 'BTC-ETH'

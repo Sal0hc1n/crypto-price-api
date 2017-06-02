@@ -4,7 +4,6 @@ from exchanges.base import Exchange
 class Bitfinex(Exchange):
 
     TICKER_URL = 'https://api.bitfinex.com/v1/pubticker/%s'
-    SUPPORTED_UNDERLYINGS= ['BTCUSD', 'ETHBTC', 'XRPBTC']
     UNDERLYING_DICT = {
         'BTCUSD' : 'btcusd',
         'ETHBTC' : 'ethbtc',

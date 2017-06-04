@@ -12,5 +12,5 @@ class GateCoin(Exchange):
     @classmethod
     def _quote_extractor(cls, data, underlying, quote):
         for jsonitem in data.get('tickers'):
-            if jsonitem.get('currencyPair') == cls.underlying_dict[underlying]:
-                return jsonitem.get(cls.quote_dict[quote])
+            if jsonitem.get('currencyPair') == cls.UNDERLYING_DICT[underlying]:
+                return jsonitem.get(cls.QUOTE_DICT[quote])

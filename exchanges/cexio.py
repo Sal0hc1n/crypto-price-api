@@ -3,7 +3,6 @@ from exchanges.base import Exchange
 class CexIO(Exchange):
 
     TICKER_URL = 'https://cex.io/api/ticker/%s'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD', 'BTCEUR']
     UNDERLYING_DICT = {
         'BTCUSD' : 'BTC/USD',
         'BTCEUR' : 'BTC/EUR'

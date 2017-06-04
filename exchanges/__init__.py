@@ -53,17 +53,17 @@ def get_all_quotes(underlyingList = []):
         for underlying in underlyingList:
             exchangeList += get_exchanges_list_for_underlying(underlying)
         exchangeList = list(set(exchangeList))
+    print(exchangeList)
     for exchange in exchangeList:
         e = get_exchange(exchange)
         if e.get_supported_underlyings() == []:
             print("%s has no supported underlyings" % exchange)
         else:
             if underlyingList == []:
-                underlyingList = e.get_supported_underlyngs()
+                underlyingList = e.get_supported_underlyings()
             for underlying in underlyingList:
                 last = e.get_quote(underlying, 'last')
                 bid = e.get_quote(underlying, 'bid')
                 ask = e.get_quote(underlying, 'ask')
-                print("%s on %s: BID: %.2f, ASK: %.2f, LAST: %.2f" % \
-                      (underlying, exchange, bid, ask, last))
+                print("%s on %s: BID: %s, ASK: %s, LAST: %s" % (underlying, exchange, bid, ask, last))
 

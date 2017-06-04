@@ -3,7 +3,6 @@ from exchanges.base import Exchange
 class Poloniex(Exchange):
 
     TICKER_URL = 'https://poloniex.com/public?command=returnTicker'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD', 'ETHBTC', 'XRPBTC']
     UNDERLYING_DICT = {
         'BTCUSD' : 'USDT_BTC',
         'ETHBTC' : 'BTC_ETH',

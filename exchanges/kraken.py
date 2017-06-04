@@ -3,7 +3,6 @@ from exchanges.base import Exchange
 class Kraken(Exchange):
 
     TICKER_URL = 'https://api.kraken.com/0/public/Ticker?pair=%s'
-    SUPPORTED_UNDERLYINGS = ['BTCUSD', 'BTCEUR', 'ETHBTC']
     UNDERLYING_DICT = {
         'BTCUSD' : 'XXBTZUSD',
         'BTCEUR' : 'XXBTZEUR',

@@ -7,5 +7,9 @@ def get_datetime():
 
 def get_response(url):
     response = requests.get(url)
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        print(err)
+        return None
     return response.json()

@@ -73,7 +73,10 @@ class Exchange(ExchangeBase):
 
     def get_quote(self, underlying, quote):
         self.get_data(underlying)
-        quote = self._quote_extractor(self.data, underlying, quote)
+        if self.data == None:
+            return 0
+        else:
+            quote = self._quote_extractor(self.data, underlying, quote)
         return Decimal(quote)
 
     def get_supported_underlyings(self):

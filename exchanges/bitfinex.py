@@ -18,6 +18,6 @@ class Bitfinex(Exchange):
 
     @classmethod
     def _quote_extractor(cls, data, underlying, quote):
-        return data.get(cls.quote_dict[quote])
+        return data.get(cls.QUOTE_DICT[quote])
 
 

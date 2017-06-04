@@ -3,7 +3,7 @@ import sys
 import requests
 
 # get API key from https://currencylayer.com/
-CL_API_KEY = 'AKIKEY'
+CL_API_KEY = 'APIKEY'
 
 if len(sys.argv) <= 1:
     FXPAIR = 'USDHKD'
@@ -41,7 +41,11 @@ for exch in intersectExchanges:
         fx_bid = e.get_quote(DOMPAIR,'bid') / e.get_quote(FORPAIR,'ask')
         fx_ask = e.get_quote(DOMPAIR,'ask') / e.get_quote(FORPAIR,'bid')
         if fxRate != 0 and (fx_bid > fxRate or fx_ask < fxRate):
-            print('%s on %s: bid %.5g / %.5g ask. Looks arbitrageable vs %.5g official rate' % (FXPAIR, exch, fx_bid, fx_ask, fxRate))
+            if fx_bid > fxRate:
+                arb = 100 * (float(fx_bid) / fxRate - 1)
+            else:
+                arb = 100 * (fxRate / float(fx_ask) - 1)
+            print('%s on %s: bid %.5g / %.5g ask. %.2f%% arb vs %.5g official rate' % (FXPAIR, exch, fx_bid, fx_ask, arb, fxRate))
         else:
             print('%s on %s: bid %.5g / %.5g ask' % (FXPAIR, exch, fx_bid, fx_ask))
     except ZeroDivisionError:

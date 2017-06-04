@@ -6,6 +6,7 @@ class GateCoin(Exchange):
     UNDERLYING_DICT = {
         'BTCUSD' : 'BTCUSD',
         'BTCEUR' : 'BTCEUR',
+        'BTCHKD' : 'BTCHKD',
         'ETHBTC' : 'ETHBTC'
     }
 

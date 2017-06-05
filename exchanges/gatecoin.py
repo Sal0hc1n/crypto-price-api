@@ -7,7 +7,8 @@ class GateCoin(Exchange):
         'BTCUSD' : 'BTCUSD',
         'BTCEUR' : 'BTCEUR',
         'BTCHKD' : 'BTCHKD',
-        'ETHBTC' : 'ETHBTC'
+        'ETHBTC' : 'ETHBTC',
+        'ETHEUR' : 'ETHEUR'
     }
 
     @classmethod

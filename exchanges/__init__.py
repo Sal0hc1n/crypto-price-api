@@ -26,7 +26,7 @@ def get_exchange(s, *args, **kwargs):
     if s not in exchange_list:
         raise RuntimeError
     else:
-        return exchange_list[s](*args, **kwargs)
+        return exchange_list[s](s)
 
 def get_exchanges_list():
     return sorted(exchange_list.keys())

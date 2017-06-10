@@ -10,8 +10,13 @@ if len(sys.argv) <= 1:
 else:
     FXPAIR = sys.argv[1]
 
-FORCCY = FXPAIR[:3]
-DOMCCY = FXPAIR[-3:]
+if len(sys.argv) <=2:
+    size = 1
+else:
+    size = int(sys.argv[2])
+
+FORCCY = FXPAIR[:3].upper()
+DOMCCY = FXPAIR[-3:].upper()
 
 FORPAIR = 'BTC'+FORCCY
 DOMPAIR = 'BTC'+DOMCCY
@@ -37,16 +42,33 @@ else:
 
 for exch in intersectExchanges:
     e = exchanges.get_exchange(exch)
+    sizeSuccess = False
     try:
-        fx_bid = e.get_quote(DOMPAIR,'bid') / e.get_quote(FORPAIR,'ask')
-        fx_ask = e.get_quote(DOMPAIR,'ask') / e.get_quote(FORPAIR,'bid')
-        if fxRate != 0 and (fx_bid > fxRate or fx_ask < fxRate):
-            if fx_bid > fxRate:
-                arb = 100 * (float(fx_bid) / fxRate - 1)
-            else:
-                arb = 100 * (fxRate / float(fx_ask) - 1)
-            print('%s on %s: bid %.5g / %.5g ask. %.2f%% arb vs %.5g official rate' % (FXPAIR, exch, fx_bid, fx_ask, arb, fxRate))
+        domDepth = e.get_depth(DOMPAIR,size)
+        forDepth = e.get_depth(FORPAIR,size)
+        fx_bid = domDepth[0] / forDepth[1]
+        fx_ask = domDepth[1] / forDepth[0]
+        sizeSuccess = True
+    except:
+        print('Depth failed, trying just regular bid')
+        try:
+            fx_bid = e.get_quote(DOMPAIR,'bid') / e.get_quote(FORPAIR,'ask')
+            fx_ask = e.get_quote(DOMPAIR,'ask') / e.get_quote(FORPAIR,'bid')
+        except ZeroDivisionError:
+            print('%s: one of the quotes is worth 0' % exch)
+            continue
+    if fxRate != 0 and (fx_bid > fxRate or fx_ask < fxRate):
+        if fx_bid > fxRate:
+            arb = 100 * (float(fx_bid) / fxRate - 1)
+            if sizeSuccess:
+                executableSize = min(domDepth[2],forDepth[3])
         else:
-            print('%s on %s: bid %.5g / %.5g ask' % (FXPAIR, exch, fx_bid, fx_ask))
-    except ZeroDivisionError:
-        print('%s: one of the quotes is worth 0' % exch)
+            arb = 100 * (fxRate / float(fx_ask) - 1)
+            if sizeSuccess:
+                executableSize = min(domDepth[3],forDepth[2])
+        if sizeSuccess:
+            print('%s on %s: bid %.5g / %.5g ask. %.2f%% arb vs %.5g official rate for %s BTC' % (FXPAIR, exch, fx_bid, fx_ask, arb, fxRate, executableSize))
+        else:
+            print('%s on %s: bid %.5g / %.5g ask. %.2f%% arb vs %.5g official rate' % (FXPAIR, exch, fx_bid, fx_ask, arb, fxRate))
+    else:
+        print('%s on %s: bid %.5g / %.5g ask' % (FXPAIR, exch, fx_bid, fx_ask))

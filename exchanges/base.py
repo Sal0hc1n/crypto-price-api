@@ -1,4 +1,6 @@
 import datetime
+import ConfigParser
+import os
 from decimal import Decimal
 
 from exchanges.helpers import get_response, get_datetime
@@ -9,7 +11,6 @@ def weekly_expiry():
     while d.weekday() != 5:
         d += datetime.timedelta(1)
     return d
-
 
 def  quarter_expiry():
     ref = datetime.date.today()
@@ -25,14 +26,11 @@ def  quarter_expiry():
         d -= datetime.timedelta(1)
     return d
 
-
 def date_stamp(d):
     return d.strftime('%Y-%m-%d')
 
-
 def time_stamp(d):
     return d.strftime('%H:%M:%S')
-
 
 class ExchangeBase(object):
 
@@ -45,11 +43,27 @@ class ExchangeBase(object):
         'last' : 'last'
     }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, exchangeName, *args, **kwargs):
         self.data = None
+        self.name = exchangeName
         self.ticker_url = self.TICKER_URL
         self.underlying_dict = self.UNDERLYING_DICT
         self.quote_dict = self.QUOTE_DICT
+        c = ConfigParser.ConfigParser()
+        cPath = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..','config.ini')
+        c.read(cPath)
+        try:
+            self.key = c.get(self.name,'key')
+            self.secret = c.get(self.name,'secret')
+        except ConfigParser.NoSectionError:
+            self.key = None
+            self.secret = None
+
+    def get_key(self):
+        return self.key
+
+    def get_secret(self):
+        return self.secret
 
     def get_data(self, underlying):
         self.refresh(underlying)

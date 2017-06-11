@@ -4,7 +4,7 @@ class BitFlyer(Exchange):
 
     TICKER_URL = 'https://api.bitflyer.jp/v1/ticker/?product_code=%s'
     UNDERLYING_DICT = {
-        'BTCUSD' : 'BTC_USD',
+        'ETHBTC' : 'ETH_BTC',
         'BTCJPY' : 'BTC_JPY'
     }
 

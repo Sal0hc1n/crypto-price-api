@@ -50,7 +50,8 @@ class ExchangeBase(object):
         self.underlying_dict = self.UNDERLYING_DICT
         self.quote_dict = self.QUOTE_DICT
         c = ConfigParser.ConfigParser()
-        cPath = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..','config.ini')
+        cPath = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini')
+        print("Loading %s" % cPath)
         c.read(cPath)
         try:
             self.key = c.get(self.name,'key')

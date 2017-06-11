@@ -56,6 +56,9 @@ class GateCoin(Exchange):
         url = self.API_URL + command
         message = httpMethod + url + contentType + now
         message = message.lower()
+        if self.get_secret() == None:
+            print("GateCoin credentials not found. Check your config.ini")
+            return None
         signature = hmac.new(self.get_secret().encode(), msg=message.encode(), digestmod=hashlib.sha256).digest()
         hashInBase64 = base64.b64encode(signature, altchars=None)
         headers = {
@@ -99,5 +102,19 @@ class GateCoin(Exchange):
         return self._send_request("Balance/Balances", "GET")
 
     def get_balance(self, currency):
-        return self._send_request("Balance/Balances/%s" % currency, "GET")
+        data = self._send_request("Balance/Balances/%s" % currency, "GET")
+        balance = {
+            'available' : 0,
+            'restricted' : 0,
+            'total' : 0
+        }
+        if data == None:
+            return None
+        elif data['responseStatus']['message'] == 'OK':
+            balance['available'] = data['balance']['availableBalance']
+            balance['total'] = data['balance']['balance']
+            balance['restricted'] = balance['total'] - balance['available']
+            return balance
+        else:
+            return data['responseStatus']['message']
 

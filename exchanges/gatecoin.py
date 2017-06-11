@@ -110,17 +110,12 @@ class GateCoin(Exchange):
         return self._send_request("Balance/Balances", "GET")
 
     # look for order done in trade_count last transactions
-    def is_order_done(self, order_id, trade_count = 0):
-        if trade_count == 0:
-            req = "Trade/Trades"
-        else:
-            req = "Trade/Trades?Count=%s" % int(trade_count)
-        data = self._send_request(req,"GET")
+    def is_order_done(self, order_id):
+        data = self._send_request("Trade/Orders/%s" % order_id,"GET")
         if data == None:
             return None
         elif data['responseStatus']['message'] == 'OK':
-            transaction_list = [x['bidOrderID'] if x['way'] == 'Bid' else x['askOrderID'] for x in data['transactions']]
-            return order_id in transaction_list
+            return int(data['order']['status']) == 6
         else:
             return None
 

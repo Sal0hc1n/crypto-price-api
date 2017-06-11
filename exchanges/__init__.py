@@ -1,5 +1,6 @@
 from exchanges.bitbay import BitBay
 from exchanges.bitfinex import Bitfinex
+from exchanges.bitflyer import BitFlyer
 from exchanges.bitstamp import Bitstamp
 from exchanges.bittrex import Bittrex
 from exchanges.cexio import CexIO
@@ -12,6 +13,7 @@ from exchanges.poloniex import Poloniex
 exchange_list = {
     'bitbay' : BitBay,
     'bitfinex' : Bitfinex,
+    'bitflyer' : BitFlyer,
     'bitstamp' : Bitstamp,
     'bittrex' : Bittrex,
     'cex.io' : CexIO,

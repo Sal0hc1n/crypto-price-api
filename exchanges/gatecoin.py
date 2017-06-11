@@ -93,13 +93,27 @@ class GateCoin(Exchange):
 
     def place_order(self, underlying, amount, price, type):
         data = {'Code': underlying, 'Way': type, 'Amount': amount, 'Price': price}
-        return self._send_request("Trade/Orders", "POST", data)
+        order = self._send_request("Trade/Orders", "POST", data)
+        if order['responseStatus']['message'] == 'OK':
+            return order['clOrderId']
+        else:
+            return "ERROR: order %s %s %s at %s Not Placed" % (type, amount, underlying, amount)
 
     def delete_order(self, order_id):
         return self._send_request("Trade/Orders/"+order_id, "DELETE")
 
     def get_balances(self):
         return self._send_request("Balance/Balances", "GET")
+
+    def isOrderDone(self, order_id):
+        data = self._send_request("Trade/Trades","GET")
+        if data == None:
+            return None
+        elif data['responseStatus']['message'] == 'OK':
+            transaction_list = [x['bidOrderID'] if x['way'] == 'Bid' else x['askOrderID'] for x in data['transactions']]
+            return order_id in transaction_list
+        else:
+            return None
 
     def get_balance(self, currency):
         data = self._send_request("Balance/Balances/%s" % currency, "GET")

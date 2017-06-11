@@ -83,7 +83,11 @@ class GateCoin(Exchange):
         #print("data: %r\n" % data)
         response = R(url, data=data, headers=headers)
         #print("response: %r\n" % response.content)
-        return response.json()
+        try:
+            return response.json()
+        except ValueError as err:
+            print(str(url) + ":" + str(response) + ", " + str(err))
+            return None
 
     def buy(self, underlying, amount, price):
         return self.place_order(underlying, str(amount), str(price), "BID")
@@ -105,8 +109,13 @@ class GateCoin(Exchange):
     def get_balances(self):
         return self._send_request("Balance/Balances", "GET")
 
-    def isOrderDone(self, order_id):
-        data = self._send_request("Trade/Trades","GET")
+    # look for order done in trade_count last transactions
+    def is_order_done(self, order_id, trade_count = 0):
+        if trade_count == 0:
+            req = "Trade/Trades"
+        else:
+            req = "Trade/Trades?Count=%s" % int(trade_count)
+        data = self._send_request(req,"GET")
         if data == None:
             return None
         elif data['responseStatus']['message'] == 'OK':

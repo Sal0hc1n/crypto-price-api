@@ -22,9 +22,20 @@ class GateCoin(Exchange):
     @classmethod
     def get_depth(cls, underlying, size):
         ticker = "https://api.gatecoin.com/Public/MarketDepth/%s" % underlying
-        r = requests.get(ticker)
-        r.raise_for_status()
-        jsonitem = r.json()
+        try:
+            r = requests.get(ticker)
+            r.raise_for_status()
+            jsonitem = r.json()
+        except requests.exceptions.HTTPError as err:
+            print(err)
+            return [0,0,0,0]
+        except requests.exceptions.SSLError as err:
+            print(err)
+            print("Consider upgrading OpenSSL")
+            return [0,0,0,0]
+        except requests.exceptions.ConnectionError as err:
+            print(err)
+            return [0,0,0,0]
         asks = [[x['volume'],x['price']] for x in jsonitem['asks']]
         bids = [[x['volume'],x['price']] for x in jsonitem['bids']]
         ask_size = 0

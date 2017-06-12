@@ -112,13 +112,23 @@ class GateCoin(Exchange):
         if order['responseStatus']['message'] == 'OK':
             return order['clOrderId']
         else:
-            return "ERROR: order %s %s %s at %s Not Placed" % (type, amount, underlying, amount)
+            return "ERROR: order %s %s %s at %s not placed: %s" % (type, amount, underlying, price, str(order))
 
     def delete_order(self, order_id):
         return self._send_request("Trade/Orders/"+order_id, "DELETE")
 
     def get_balances(self):
         return self._send_request("Balance/Balances", "GET")
+
+    def get_live_orders(self):
+        data = self._send_request("Trade/Orders","GET")
+        if data == None:
+            return None
+        elif data['responseStatus']['message'] == 'OK':
+            return data['orders']
+        else:
+            print(str(data))
+            return None
 
     # look for order done in trade_count last transactions
     def is_order_done(self, order_id):
@@ -127,6 +137,18 @@ class GateCoin(Exchange):
             return None
         elif data['responseStatus']['message'] == 'OK':
             return int(data['order']['status']) == 6
+        else:
+            return None
+
+    def get_trades(self, trade_count = 0):
+        req = "Trade/Trades"
+        if trade_count != 0:
+            req += "?Count=%s" % int(trade_count)
+        data = self._send_request(req, "GET")
+        if data == None:
+            return None
+        elif data['responseStatus']['message'] == 'OK':
+            return data['transactions']
         else:
             return None
 

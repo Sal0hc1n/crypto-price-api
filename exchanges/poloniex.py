@@ -4,7 +4,7 @@ class Poloniex(Exchange):
 
     TICKER_URL = 'https://poloniex.com/public?command=returnTicker'
     UNDERLYING_DICT = {
-        'BTCUSD' : 'USDT_BTC',
+        'BTCUSDT' : 'USDT_BTC',
         'ETHBTC' : 'BTC_ETH',
         'XRPBTC' : 'BTC_XRP'
     }

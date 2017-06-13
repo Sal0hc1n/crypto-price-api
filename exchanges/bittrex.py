@@ -4,7 +4,7 @@ class Bittrex(Exchange):
 
     TICKER_URL = 'https://bittrex.com/api/v1.1/public/getticker?market=%s'
     UNDERLYING_DICT = {
-        'BTCUSD' : 'USDT-BTC',
+        'BTCUSDT' : 'USDT-BTC',
         'ETHBTC' : 'BTC-ETH'
     }
     QUOTE_DICT = {

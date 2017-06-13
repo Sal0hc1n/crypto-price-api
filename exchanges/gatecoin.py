@@ -22,9 +22,20 @@ class GateCoin(Exchange):
     @classmethod
     def get_depth(cls, underlying, size):
         ticker = "https://api.gatecoin.com/Public/MarketDepth/%s" % underlying
-        r = requests.get(ticker)
-        r.raise_for_status()
-        jsonitem = r.json()
+        try:
+            r = requests.get(ticker)
+            r.raise_for_status()
+            jsonitem = r.json()
+        except requests.exceptions.HTTPError as err:
+            print(err)
+            return [0,0,0,0]
+        except requests.exceptions.SSLError as err:
+            print(err)
+            print("Consider upgrading OpenSSL")
+            return [0,0,0,0]
+        except requests.exceptions.ConnectionError as err:
+            print(err)
+            return [0,0,0,0]
         asks = [[x['volume'],x['price']] for x in jsonitem['asks']]
         bids = [[x['volume'],x['price']] for x in jsonitem['bids']]
         ask_size = 0
@@ -83,7 +94,11 @@ class GateCoin(Exchange):
         #print("data: %r\n" % data)
         response = R(url, data=data, headers=headers)
         #print("response: %r\n" % response.content)
-        return response.json()
+        try:
+            return response.json()
+        except ValueError as err:
+            print(str(url) + ":" + str(response) + ", " + str(err))
+            return None
 
     def buy(self, underlying, amount, price):
         return self.place_order(underlying, str(amount), str(price), "BID")
@@ -93,13 +108,49 @@ class GateCoin(Exchange):
 
     def place_order(self, underlying, amount, price, type):
         data = {'Code': underlying, 'Way': type, 'Amount': amount, 'Price': price}
-        return self._send_request("Trade/Orders", "POST", data)
+        order = self._send_request("Trade/Orders", "POST", data)
+        if order['responseStatus']['message'] == 'OK':
+            return order['clOrderId']
+        else:
+            return "ERROR: order %s %s %s at %s not placed: %s" % (type, amount, underlying, price, str(order))
 
     def delete_order(self, order_id):
         return self._send_request("Trade/Orders/"+order_id, "DELETE")
 
     def get_balances(self):
         return self._send_request("Balance/Balances", "GET")
+
+    def get_live_orders(self):
+        data = self._send_request("Trade/Orders","GET")
+        if data == None:
+            return None
+        elif data['responseStatus']['message'] == 'OK':
+            return data['orders']
+        else:
+            print(str(data))
+            return None
+
+    # look for order done in trade_count last transactions
+    def is_order_done(self, order_id):
+        data = self._send_request("Trade/Orders/%s" % order_id,"GET")
+        if data == None:
+            return None
+        elif data['responseStatus']['message'] == 'OK':
+            return int(data['order']['status']) == 6
+        else:
+            return None
+
+    def get_trades(self, trade_count = 0):
+        req = "Trade/Trades"
+        if trade_count != 0:
+            req += "?Count=%s" % int(trade_count)
+        data = self._send_request(req, "GET")
+        if data == None:
+            return None
+        elif data['responseStatus']['message'] == 'OK':
+            return data['transactions']
+        else:
+            return None
 
     def get_balance(self, currency):
         data = self._send_request("Balance/Balances/%s" % currency, "GET")

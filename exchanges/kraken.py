@@ -6,7 +6,12 @@ class Kraken(Exchange):
     UNDERLYING_DICT = {
         'BTCUSD' : 'XXBTZUSD',
         'BTCEUR' : 'XXBTZEUR',
-        'ETHBTC' : 'XETHXXBT'
+        'ETHBTC' : 'XETHXXBT',
+        'BTCJPY' : 'XXBTZJPY',
+        'ETHJPY' : 'XETHZJPY',
+        'ETHUSD' : 'XETHZUSD',
+        'ETHEUR' : 'XETHZEUR'
+
     }
     QUOTE_DICT = {
         'ask' : 'a',

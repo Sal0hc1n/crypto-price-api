@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 BOTNAME = '@BotName_bot'
 TOKEN = 'BOTTOKEN'
-CL_API_KEY = 'CLAPIKEY'
+CL_API_KEY = 'CL_API_KEY'
 
 def startMsg(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="Type /list to get a list of supported exchanges and underlyings.\nType /price <underlying> <exchange> to retrieve a price.\nFor example /price btcusd kraken")
@@ -97,6 +97,8 @@ def fx(underlying, exchange, cross_ccy):
         forExchanges = exchanges.get_exchanges_list_for_underlying(FORPAIR)
         domExchanges = exchanges.get_exchanges_list_for_underlying(DOMPAIR)
         intersectExchanges = list(set(forExchanges).intersection(domExchanges))
+    elif exchange.lower() not in exchanges.get_exchanges_list():
+        return ['Unsupported exchange %s' % exchange]
     else:
         if (FORPAIR in exchanges.get_exchange(exchange.lower()).get_supported_underlyings()) and (DOMPAIR in exchanges.get_exchange(exchange.lower()).get_supported_underlyings()):
             intersectExchanges = [exchange]
@@ -117,6 +119,8 @@ def fx(underlying, exchange, cross_ccy):
     else:
         fxRate = 0
         results.append('Could not retrieve %s FX rate from CurrencyLayer' % underlying)
+
+    results.append('Using %s as the cross currency: %s and %s' % (cross_ccy.upper(), FORPAIR, DOMPAIR))
 
     for exch in intersectExchanges:
         e = exchanges.get_exchange(exch.lower())

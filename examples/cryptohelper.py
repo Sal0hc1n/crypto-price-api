@@ -11,8 +11,9 @@ import requests
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s-%(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-BOTNAME = 'BOTNAME'
-TOKEN = 'TOKEN'
+BOTNAME = '@BotName_bot'
+TOKEN = 'BOTTOKEN'
+CL_API_KEY = 'CLAPIKEY'
 
 def startMsg(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="Type /list to get a list of supported exchanges and underlyings.\nType /price <underlying> <exchange> to retrieve a price.\nFor example /price btcusd kraken")
@@ -33,7 +34,9 @@ def list_text():
 def price(underlying, exchange_list):
     if underlying == 'BITCOIN':
         underlying = 'BTCUSD'
+    all_requested = False
     if exchange_list == ['all']:
+        all_requested = True
         exchange_list = exchanges.get_exchanges_list_for_underlying(underlying)
     bestbid = 0.00000001
     bestask = 1000000000
@@ -52,16 +55,29 @@ def price(underlying, exchange_list):
                 try:
                     price = (bid + ask) / 2
                     spread = 100 * (ask - bid) / price
-                    if bid > bestbid:
-                        bestbid = bid
-                        bestbid_exch = exchange_name
-                    if ask < bestask:
-                        bestask = ask
-                        bestask_exch = exchange_name
-                    if spread < bestspread:
-                        bestspread = spread
-                        bestspread_exch = exchange_name
-                    i = i + 1
+                    if not all_requested:
+                        if bid > bestbid:
+                            bestbid = bid
+                            bestbid_exch = exchange_name
+                        if ask < bestask:
+                            bestask = ask
+                            bestask_exch = exchange_name
+                        if spread < bestspread:
+                            bestspread = spread
+                            bestspread_exch = exchange_name
+                        i = i + 1
+                    elif spread < 3.5:
+                        if bid > bestbid:
+                            bestbid = bid
+                            bestbid_exch = exchange_name
+                        if ask < bestask:
+                            bestask = ask
+                            bestask_exch = exchange_name
+                        if spread < bestspread:
+                            bestspread = spread
+                            bestspread_exch = exchange_name
+                        i = i + 1
+
                     if  price > 1:
                         results.append("%s %s price is %.2f: %.2f / %.2f (%.2f%% wide)" % (exchange_name, underlying, price, bid, ask, spread))
                     else:
@@ -81,9 +97,6 @@ def price(underlying, exchange_list):
     return results
 
 def fx(underlying, exchange, cross_ccy):
-    # get API
-    CL_API_KEY = 'CL_API_KEY'
-
     FORCCY = underlying[:3].upper()
     DOMCCY = underlying[-3:].upper()
 

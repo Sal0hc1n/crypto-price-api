@@ -55,7 +55,7 @@ def price(underlying, exchange_list):
                 try:
                     price = (bid + ask) / 2
                     spread = 100 * (ask - bid) / price
-                    if not all_requested:
+                    if not all_requested or spread < 3.5:
                         if bid > bestbid:
                             bestbid = bid
                             bestbid_exch = exchange_name
@@ -66,18 +66,6 @@ def price(underlying, exchange_list):
                             bestspread = spread
                             bestspread_exch = exchange_name
                         i = i + 1
-                    elif spread < 3.5:
-                        if bid > bestbid:
-                            bestbid = bid
-                            bestbid_exch = exchange_name
-                        if ask < bestask:
-                            bestask = ask
-                            bestask_exch = exchange_name
-                        if spread < bestspread:
-                            bestspread = spread
-                            bestspread_exch = exchange_name
-                        i = i + 1
-
                     if  price > 1:
                         results.append("%s %s price is %.2f: %.2f / %.2f (%.2f%% wide)" % (exchange_name, underlying, price, bid, ask, spread))
                     else:

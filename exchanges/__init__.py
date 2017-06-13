@@ -5,6 +5,7 @@ from exchanges.bitstamp import Bitstamp
 from exchanges.bittrex import Bittrex
 from exchanges.cexio import CexIO
 from exchanges.gatecoin import GateCoin
+from exchanges.gdax import GDAX
 from exchanges.hitbtc import HitBTC
 from exchanges.kraken import Kraken
 from exchanges.okcoin import OKCoin
@@ -17,11 +18,12 @@ exchange_list = {
     'bitstamp' : Bitstamp,
     'bittrex' : Bittrex,
     'cex.io' : CexIO,
+    'gatecoin' : GateCoin,
+    'gdax' : GDAX,
     'hitbtc' : HitBTC,
     'kraken' : Kraken,
     'okcoin' : OKCoin,
-    'poloniex' : Poloniex,
-    'gatecoin' : GateCoin
+    'poloniex' : Poloniex
 }
 
 def get_exchange(s, *args, **kwargs):

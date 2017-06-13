@@ -38,6 +38,8 @@ def price(underlying, exchange_list):
     if exchange_list == ['all']:
         all_requested = True
         exchange_list = exchanges.get_exchanges_list_for_underlying(underlying)
+    if exchange_list == []:
+        return ['No exchange support %s' % underlying]
     bestbid = 0.00000001
     bestask = 1000000000
     bestspread = 100

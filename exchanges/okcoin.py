@@ -10,10 +10,10 @@ from exchanges.helpers import get_response, get_datetime
 
 class OKCoin(Exchange):
 
-    TICKER_URL = 'https://www.okcoin.com/api/ticker.do?ok=1'
+    TICKER_URL = 'https://www.okcoin.com/api/v1/ticker.do?symbol=%s'
     UNDERLYING_DICT = {
-        'BTCUSD' : 'BTCUSD',
-        'ETHUSD' : 'ETHUSD'
+        'BTCUSD' : 'btc_usd',
+        'ETHUSD' : 'eth_usd'
     }
     QUOTE_DICT = {
         'bid' : 'buy',

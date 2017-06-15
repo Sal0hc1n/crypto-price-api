@@ -112,7 +112,8 @@ class GateCoin(Exchange):
         if order['responseStatus']['message'] == 'OK':
             return order['clOrderId']
         else:
-            return "ERROR: order %s %s %s at %s not placed: %s" % (type, amount, underlying, price, str(order))
+            print("ERROR: order %s %s %s at %s not placed: %s" % (type, amount, underlying, price, str(order)))
+            return -1
 
     def delete_order(self, order_id):
         return self._send_request("Trade/Orders/"+order_id, "DELETE")

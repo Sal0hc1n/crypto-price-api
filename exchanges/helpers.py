@@ -16,6 +16,9 @@ def get_response(url):
         print(err)
         print("Consider upgrading OpenSSL")
         return None
+    except requests.exceptions.ReadTimeout as err:
+        print(err)
+        return None
     except requests.exceptions.ConnectionError as err:
         print(err)
         return None

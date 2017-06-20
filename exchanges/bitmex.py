@@ -4,9 +4,9 @@ import dateutil.parser
 
 from exchanges.base import FuturesExchange, date_stamp, time_stamp
 from exchanges.helpers import get_response, get_datetime
+from exchanges.websocket import Exchange_WebSocket
 
-
-class Bitmex(FuturesExchange):
+class BitMEX(FuturesExchange):
 
     TICKER_URL = 'https://www.bitmex.com:443/api/v1/instrument/active'
 
@@ -36,3 +36,6 @@ class Bitmex(FuturesExchange):
             'asks' : [Decimal(str(x)) for x in asks],
             'last' : [Decimal(str(x)) for x in last]
         }
+
+    def init_ws(self):
+        ws = Exchange_WebSocket(self.name, self.key, self.secret, self.logger)

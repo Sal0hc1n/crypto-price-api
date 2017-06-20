@@ -2,6 +2,7 @@ import datetime
 import ConfigParser
 import os
 from decimal import Decimal
+import logging
 
 from exchanges.helpers import get_response, get_datetime
 
@@ -43,25 +44,45 @@ class ExchangeBase(object):
         'last' : 'last'
     }
 
-    def __init__(self, exchangeName, *args, **kwargs):
+    def __init__(self, exchangeName, loggerObject = None, *args, **kwargs):
+        if type(loggerObject) is not logging.getLoggerClass():
+            self.logger = logging.getLogger(exchangeName)
+            # default log to stdout. override this if needed
+            self.logger.setLevel(logging.DEBUG)
+            lh = logging.StreamHandler()
+            lh.setFormatter(logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s"))
+            self.logger.addHandler(lh)
+        else:
+            self.logger = loggerObject
         self.data = None
+        self.error = ''
         self.name = exchangeName
         self.ticker_url = self.TICKER_URL
         self.underlying_dict = self.UNDERLYING_DICT
         self.quote_dict = self.QUOTE_DICT
         c = ConfigParser.ConfigParser()
         cPath = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.ini')
-        print("Loading %s" % cPath)
+        self.logger.debug("Loading %s" % cPath)
         c.read(cPath)
         try:
             self.key = c.get(self.name,'key')
             self.secret = c.get(self.name,'secret')
-        except ConfigParser.NoSectionError:
+        except ConfigParser.NoSectionError as err:
+            self.error = str(err)
             self.key = None
             self.secret = None
 
     def get_key(self):
         return self.key
+
+    def has_error(self):
+        return self.error != ''
+
+    def get_error(self):
+        if self.error == '':
+            return None
+        else:
+            return self.error
 
     def get_secret(self):
         return self.secret

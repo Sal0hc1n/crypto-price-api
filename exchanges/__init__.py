@@ -1,6 +1,7 @@
 from exchanges.bitbay import BitBay
 from exchanges.bitfinex import Bitfinex
 from exchanges.bitflyer import BitFlyer
+from exchanges.bitmex import BitMEX
 from exchanges.bitstamp import Bitstamp
 from exchanges.bittrex import Bittrex
 from exchanges.cexio import CexIO
@@ -26,11 +27,18 @@ exchange_list = {
     'poloniex' : Poloniex
 }
 
+fut_exchange_list = {
+    'bitmex' : BitMEX
+}
+
 def get_exchange(s, *args, **kwargs):
-    if s not in exchange_list:
+    if s not in exchange_list and s not in fut_exchange_list:
         raise RuntimeError
     else:
-        return exchange_list[s](s)
+        if s in exchange_list:
+            return exchange_list[s](s, *args, **kwargs)
+        else:
+            return fut_exchange_list[s](s, *args, **kwargs)
 
 def get_exchanges_list():
     return sorted(exchange_list.keys())

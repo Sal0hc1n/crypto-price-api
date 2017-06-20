@@ -19,7 +19,6 @@ class GateCoin(Exchange):
             if jsonitem.get('currencyPair') == cls.UNDERLYING_DICT[underlying]:
                 return jsonitem.get(cls.QUOTE_DICT[quote])
 
-    @classmethod
     def get_depth(cls, underlying, size):
         ticker = "https://api.gatecoin.com/Public/MarketDepth/%s" % underlying
         try:
@@ -27,14 +26,14 @@ class GateCoin(Exchange):
             r.raise_for_status()
             jsonitem = r.json()
         except requests.exceptions.HTTPError as err:
-            print(err)
+            cls.logger.error(err)
             return [0,0,0,0]
         except requests.exceptions.SSLError as err:
-            print(err)
-            print("Consider upgrading OpenSSL")
+            cls.logger.error(err)
+            cls.logger.error("Consider upgrading OpenSSL")
             return [0,0,0,0]
         except requests.exceptions.ConnectionError as err:
-            print(err)
+            cls.logger.error(err)
             return [0,0,0,0]
         asks = [[x['volume'],x['price']] for x in jsonitem['asks']]
         bids = [[x['volume'],x['price']] for x in jsonitem['bids']]
@@ -68,7 +67,8 @@ class GateCoin(Exchange):
         message = httpMethod + url + contentType + now
         message = message.lower()
         if self.get_secret() == None:
-            print("GateCoin credentials not found. Check your config.ini")
+            self.logger.error("GateCoin credentials not found. Check your config.ini")
+            self.error = "AuthFailed"
             return None
         signature = hmac.new(self.get_secret().encode(), msg=message.encode(), digestmod=hashlib.sha256).digest()
         hashInBase64 = base64.b64encode(signature, altchars=None)
@@ -86,18 +86,27 @@ class GateCoin(Exchange):
         elif httpMethod == "POST":
             R = requests.post
         data = json.dumps(params)
-        #print("command: %r" % command)
-        #print("url: %r" % url)
-        #print("headers: %r" % headers)
-        #print("params: %r" % params)
-        #print("message: %r" % message)
-        #print("data: %r\n" % data)
-        response = R(url, data=data, headers=headers)
-        #print("response: %r\n" % response.content)
+        #self.logger.debug("command: %r" % command)
+        #self.logger.debug("url: %r" % url)
+        #self.logger.debug("headers: %r" % headers)
+        #self.logger.debug("params: %r" % params)
+        #self.logger.debug("message: %r" % message)
+        #self.logger.debug("data: %r\n" % data)
+        try:
+            response = R(url, data=data, headers=headers)
+        except requests.exceptions.ConnectionError as err:
+            self.logger.debug("command: %r" % command)
+            self.logger.debug("url: %r" % url)
+            self.logger.debug("headers: %r" % headers)
+            self.logger.debug("params: %r" % params)
+            self.logger.debug("message: %r" % message)
+            self.logger.debug("data: %r\n" % data)
+            self.logger.error(err)
+            return None
         try:
             return response.json()
         except ValueError as err:
-            print(str(url) + ":" + str(response) + ", " + str(err))
+            self.logger.error(str(url) + ":" + str(response) + ", " + str(err))
             return None
 
     def buy(self, underlying, amount, price):
@@ -112,7 +121,7 @@ class GateCoin(Exchange):
         if order['responseStatus']['message'] == 'OK':
             return order['clOrderId']
         else:
-            print("ERROR: order %s %s %s at %s not placed: %s" % (type, amount, underlying, price, str(order)))
+            self.logger.error("ERROR: order %s %s %s at %s not placed: %s" % (type, amount, underlying, price, str(order)))
             return -1
 
     def delete_order(self, order_id):
@@ -128,7 +137,7 @@ class GateCoin(Exchange):
         elif data['responseStatus']['message'] == 'OK':
             return data['orders']
         else:
-            print(str(data))
+            self.logger.error(str(data))
             return None
 
     # look for order done in trade_count last transactions
@@ -138,6 +147,15 @@ class GateCoin(Exchange):
             return None
         elif data['responseStatus']['message'] == 'OK':
             return int(data['order']['status']) == 6
+        else:
+            return None
+
+    def get_order_status(self, order_id):
+        data = self._send_request("Trade/Orders/%s" % order_id,"GET")
+        if data == None:
+            return None
+        elif data['responseStatus']['message'] == 'OK':
+            return [int(data['order']['status']), float(data['order']['initialQuantity']) - float(data['order']['remainingQuantity'])]
         else:
             return None
 

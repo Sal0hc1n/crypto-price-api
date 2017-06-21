@@ -19,12 +19,15 @@ class GateCoin(Exchange):
             if jsonitem.get('currencyPair') == cls.UNDERLYING_DICT[underlying]:
                 return jsonitem.get(cls.QUOTE_DICT[quote])
 
-    def get_depth(cls, underlying, size):
+    def get_depth(cls, underlying, size = 0):
         ticker = "https://api.gatecoin.com/Public/MarketDepth/%s" % underlying
         try:
             r = requests.get(ticker)
             r.raise_for_status()
             jsonitem = r.json()
+        except requests.exceptions.ReadTimeout as err:
+            cls.logger.error(err)
+            return [0,0,0,0]
         except requests.exceptions.HTTPError as err:
             cls.logger.error(err)
             return [0,0,0,0]
@@ -40,21 +43,23 @@ class GateCoin(Exchange):
         ask_size = 0
         ask = 0
         i = 0
-        while (ask_size < size and i<len(asks)):
+        while (ask_size <= size and i<len(asks)):
             prev_size = ask_size
             prev = prev_size * ask
             ask_size += asks[i][0]
-            ask_size = min(size, ask_size)
+            if size != 0:
+                ask_size = min(size, ask_size)
             ask = ((ask_size - prev_size) *asks[i][1] + prev)/(ask_size)
             i+=1
         bid_size=0
         bid=0
         i=0
-        while (bid_size < size and i<len(bids)):
+        while (bid_size <= size and i<len(bids)):
             prev_size = bid_size
             prev = prev_size * bid
             bid_size += bids[i][0]
-            bid_size = min(size, bid_size)
+            if size != 0:
+                bid_size = min(size, bid_size)
             bid = ((bid_size - prev_size) *bids[i][1] + prev)/(bid_size)
             i+=1
         return [bid, ask, bid_size, ask_size]

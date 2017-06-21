@@ -7,6 +7,7 @@ from exchanges.bittrex import Bittrex
 from exchanges.cexio import CexIO
 from exchanges.gatecoin import GateCoin
 from exchanges.gdax import GDAX
+from exchanges.gemini import Gemini
 from exchanges.hitbtc import HitBTC
 from exchanges.kraken import Kraken
 from exchanges.okcoin import OKCoin
@@ -21,6 +22,7 @@ exchange_list = {
     'cex.io' : CexIO,
     'gatecoin' : GateCoin,
     'gdax' : GDAX,
+    'gemini' : Gemini,
     'hitbtc' : HitBTC,
     'kraken' : Kraken,
     'okcoin' : OKCoin,

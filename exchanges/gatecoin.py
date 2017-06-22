@@ -123,6 +123,9 @@ class GateCoin(Exchange):
     def place_order(self, underlying, amount, price, type):
         data = {'Code': underlying, 'Way': type, 'Amount': amount, 'Price': price}
         order = self._send_request("Trade/Orders", "POST", data)
+        if order == None:
+            self.logger.error("ERROR: order %s %s %s at %s not placed: %s" % (type, amount, underlying, price, str(order)))
+            return -1
         if order['responseStatus']['message'] == 'OK':
             return order['clOrderId']
         else:

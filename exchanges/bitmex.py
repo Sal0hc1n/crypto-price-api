@@ -4,38 +4,31 @@ import dateutil.parser
 
 from exchanges.base import FuturesExchange, date_stamp, time_stamp
 from exchanges.helpers import get_response, get_datetime
-from exchanges.websocket import Exchange_WebSocket
+from exchanges.ws import Exchange_WebSocket
+import logging
 
 class BitMEX(FuturesExchange):
 
     TICKER_URL = 'https://www.bitmex.com:443/api/v1/instrument/active'
+    WS_TICKER_URL = 'https://www.bitmex.com/api/v1/'
+    stream = {}
 
-    def get_current_data(self):
-        self.refresh()
-        symbols = []
-        dates = []
-        bids = []
-        asks = []
-        last = []
-        contract = []
-        for contracttype in ['XBU', 'XBT']:
-            for i in self.data:
-                if i['rootSymbol'] == contracttype and i['buyLeg'] == '':
-                    dates.append(
-                        date_stamp(dateutil.parser.parse(i['expiry']))
-                    )
-                    symbols.append(i['symbol'])
-                    bids.append(i['bidPrice'])
-                    asks.append(i['askPrice'])
-                    last.append(i['lastPrice'])
-                    contract.append(contracttype)
-        return {
-            'contract' : contract,
-            'dates': dates,
-            'bids' : [Decimal(str(x)) for x in bids],
-            'asks' : [Decimal(str(x)) for x in asks],
-            'last' : [Decimal(str(x)) for x in last]
-        }
+    def init_ws(self, symbol):
+        self.logger.setLevel(logging.INFO)
+        if symbol in self.stream.keys():
+            if (not self.stream[symbol].connected) or self.stream[symbol].exited:
+                ws = Exchange_WebSocket(self.name, self.key, self.secret, self.logger)
+                ws.connect(self.WS_TICKER_URL)
+                self.stream[symbol] = ws
+        else:
+            self.stream[symbol] = Exchange_WebSocket(self.name, self.key, self.secret, self.logger)
+            self.stream[symbol].connect(self.WS_TICKER_URL)
+        return self.stream[symbol].connected
 
-    def init_ws(self):
-        ws = Exchange_WebSocket(self.name, self.key, self.secret, self.logger)
+    def get_quote(self, symbol):
+        if symbol in self.stream.keys():
+            if self.stream[symbol].connected:
+                return self.stream[symbol].data['quote'][-1:]
+        else:
+            return None
+

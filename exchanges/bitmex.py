@@ -13,7 +13,7 @@ class BitMEX(FuturesExchange):
     WS_TICKER_URL = 'https://www.bitmex.com/api/v1/'
     stream = {}
 
-    def init_ws(self, symbol):
+    def init_symbol(self, symbol):
         self.logger.setLevel(logging.INFO)
         if symbol in self.stream.keys():
             if (not self.stream[symbol].connected) or self.stream[symbol].exited:

@@ -136,6 +136,9 @@ class GateCoin(Exchange):
             return -1
 
     def delete_order(self, order_id):
+        if type(order_id) is not str:
+            self.logger.error("Invalid order id provided %s" % str(order_id))
+            return None
         return self._send_request("Trade/Orders/"+order_id, "DELETE")
 
     def get_balances(self):

@@ -19,7 +19,7 @@ class GateCoin(Exchange):
             if jsonitem.get('currencyPair') == cls.UNDERLYING_DICT[underlying]:
                 return jsonitem.get(cls.QUOTE_DICT[quote])
 
-    def get_depth(cls, underlying, size = 0):
+    def get_depth(cls, underlying, bid_size = 0, ask_size = 0):
         ticker = "https://api.gatecoin.com/Public/MarketDepth/%s" % underlying
         try:
             r = requests.get(ticker)
@@ -40,32 +40,32 @@ class GateCoin(Exchange):
             return [0,0,0,0]
         asks = [[x['volume'],x['price']] for x in jsonitem['asks']]
         bids = [[x['volume'],x['price']] for x in jsonitem['bids']]
-        ask_size = 0
+        work_ask_size = 0
         ask = 0
         i = 0
         if len(bids) == 0 or len(asks) == 0:
             cls.logger.error("Unable to retrieve quotes for %s, underlying")
             return [0,0,0,0]
-        while (ask_size <= size and i<len(asks)):
-            prev_size = ask_size
+        while (work_ask_size <= ask_size and i<len(asks)):
+            prev_size = work_ask_size
             prev = prev_size * ask
-            ask_size += asks[i][0]
-            if size != 0:
-                ask_size = min(size, ask_size)
-            ask = ((ask_size - prev_size) *asks[i][1] + prev)/(ask_size)
+            work_ask_size += asks[i][0]
+            if ask_size != 0:
+                work_ask_size = min(ask_size, work_ask_size)
+            ask = ((work_ask_size - prev_size) *asks[i][1] + prev)/(work_ask_size)
             i+=1
-        bid_size=0
+        work_bid_size=0
         bid=0
         i=0
-        while (bid_size <= size and i<len(bids)):
-            prev_size = bid_size
+        while (work_bid_size <= bid_size and i<len(bids)):
+            prev_size = work_bid_size
             prev = prev_size * bid
-            bid_size += bids[i][0]
-            if size != 0:
-                bid_size = min(size, bid_size)
-            bid = ((bid_size - prev_size) *bids[i][1] + prev)/(bid_size)
+            work_bid_size += bids[i][0]
+            if bid_size != 0:
+                bid_size = min(bid_size, work_bid_size)
+            bid = ((work_bid_size - prev_size) *bids[i][1] + prev)/(work_bid_size)
             i+=1
-        return [bid, ask, bid_size, ask_size]
+        return [bid, ask, work_bid_size, work_ask_size]
 
     # Send requests via the private API
     def _send_request(self, command, httpMethod, params={}):
@@ -136,10 +136,7 @@ class GateCoin(Exchange):
             return -1
 
     def delete_order(self, order_id):
-        if type(order_id) is not str:
-            self.logger.error("Invalid order id provided %s" % str(order_id))
-            return None
-        return self._send_request("Trade/Orders/"+order_id, "DELETE")
+        return self._send_request("Trade/Orders/%s" % order_id, "DELETE")
 
     def get_balances(self):
         return self._send_request("Balance/Balances", "GET")

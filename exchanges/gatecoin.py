@@ -62,7 +62,7 @@ class GateCoin(Exchange):
             prev = prev_size * bid
             work_bid_size += bids[i][0]
             if bid_size != 0:
-                bid_size = min(bid_size, work_bid_size)
+                work_bid_size = min(bid_size, work_bid_size)
             bid = ((work_bid_size - prev_size) *bids[i][1] + prev)/(work_bid_size)
             i+=1
         return [bid, ask, work_bid_size, work_ask_size]

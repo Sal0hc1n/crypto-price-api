@@ -6,7 +6,9 @@ class HitBTC(Exchange):
     UNDERLYING_DICT = {
         'BTCUSD' : 'BTCUSD',
         'BTCEUR' : 'BTCEUR',
-        'ETHBTC' : 'ETHBTC'
+        'ETHBTC' : 'ETHBTC',
+        'PAYETH' : 'PAYETH',
+        'SNTETH' : 'SNTETH'
     }
 
     @classmethod

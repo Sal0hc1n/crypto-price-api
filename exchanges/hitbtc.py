@@ -8,7 +8,8 @@ class HitBTC(Exchange):
         'BTCEUR' : 'BTCEUR',
         'ETHBTC' : 'ETHBTC',
         'PAYETH' : 'PAYETH',
-        'SNTETH' : 'SNTETH'
+        'SNTETH' : 'SNTETH',
+        'CVCUSDT' : 'CVCUSD'
     }
 
     @classmethod

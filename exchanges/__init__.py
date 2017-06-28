@@ -10,6 +10,7 @@ from exchanges.gdax import GDAX
 from exchanges.gemini import Gemini
 from exchanges.hitbtc import HitBTC
 from exchanges.kraken import Kraken
+from exchanges.liqui import Liqui
 from exchanges.okcoin import OKCoin
 from exchanges.poloniex import Poloniex
 
@@ -25,6 +26,7 @@ exchange_list = {
     'gemini' : Gemini,
     'hitbtc' : HitBTC,
     'kraken' : Kraken,
+    'liqui' : Liqui,
     'okcoin' : OKCoin,
     'poloniex' : Poloniex
 }

@@ -48,7 +48,7 @@ class GateCoin(Exchange):
         ask = 0
         i = 0
         if len(bids) == 0 or len(asks) == 0:
-            cls.logger.error("Unable to retrieve quotes for %s, underlying")
+            cls.logger.error("Unable to retrieve quotes for %s" % underlying)
             return [0,0,0,0]
         while (work_ask_size <= ask_size and i<len(asks)):
             prev_size = work_ask_size

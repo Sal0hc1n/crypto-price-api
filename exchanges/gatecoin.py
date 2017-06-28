@@ -10,7 +10,11 @@ class GateCoin(Exchange):
         'BTCEUR' : 'BTCEUR',
         'BTCHKD' : 'BTCHKD',
         'ETHBTC' : 'ETHBTC',
-        'ETHEUR' : 'ETHEUR'
+        'ETHEUR' : 'ETHEUR',
+        'ETHUSD' : 'ETHUSD',
+        'ETHHKD' : 'ETHHKD',
+        'SNTUSD' : 'SNTUSD',
+        'SNTBTC' : 'SNTBTC'
     }
 
     @classmethod

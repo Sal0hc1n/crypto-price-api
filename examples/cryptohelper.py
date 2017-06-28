@@ -11,9 +11,9 @@ import requests
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s-%(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-BOTNAME = '@BotName_bot'
-TOKEN = 'BOTTOKEN'
-CL_API_KEY = 'CL_API_KEY'
+BOTNAME = '@BotName_Bot'
+TOKEN = 'TOKEN'
+CL_API_KEY = 'CLAPIKEY'
 
 def startMsg(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="Type /list to get a list of supported exchanges and underlyings.\nType /price <underlying> <exchange> to retrieve a price.\nFor example /price btcusd kraken")
@@ -90,8 +90,12 @@ def fx(underlying, exchange, cross_ccy):
     FORCCY = underlying[:3].upper()
     DOMCCY = underlying[-3:].upper()
 
-    FORPAIR = cross_ccy+FORCCY
-    DOMPAIR = cross_ccy+DOMCCY
+    if cross_ccy in ('USD','EUR','JPY'):
+        FORPAIR = DOMCCY+cross_ccy
+        DOMPAIR = FORCCY+cross_ccy
+    else:
+        FORPAIR = cross_ccy+FORCCY
+        DOMPAIR = cross_ccy+DOMCCY
 
     if exchange == "all":
         forExchanges = exchanges.get_exchanges_list_for_underlying(FORPAIR)
@@ -104,21 +108,24 @@ def fx(underlying, exchange, cross_ccy):
             intersectExchanges = [exchange]
         else:
             return ["Exchange %s does not support %s and %s" % (exchange, FORPAIR, DOMPAIR)]
-
-    url = 'http://www.apilayer.net/api/live?access_key='+CL_API_KEY+'&currencies='+FORCCY+','+DOMCCY
     results = []
-
-    r = requests.get(url)
-    r.raise_for_status()
-    j = r.json()
-    if j['success']:
-        domOfficialRate = r.json()['quotes']['USD'+DOMCCY]
-        forOfficialRate = r.json()['quotes']['USD'+FORCCY]
-        fxRate = domOfficialRate / forOfficialRate
-        results.append('Currency Layer %s FX rate is %.5g' % (underlying, fxRate))
+    if cross_ccy in ('USD','EUR','JPY'):
+        e = exchanges.get_exchange(intersectExchanges[0].lower())
+        fxRate = float(e.get_quote(underlying,'last'))
+        results.append('%s rate for %s is %.5g' % (intersectExchanges[0], underlying, fxRate))
     else:
-        fxRate = 0
-        results.append('Could not retrieve %s FX rate from CurrencyLayer' % underlying)
+        url = 'http://www.apilayer.net/api/live?access_key='+CL_API_KEY+'&currencies='+FORCCY+','+DOMCCY
+        r = requests.get(url)
+        r.raise_for_status()
+        j = r.json()
+        if j['success']:
+            domOfficialRate = r.json()['quotes']['USD'+DOMCCY]
+            forOfficialRate = r.json()['quotes']['USD'+FORCCY]
+            fxRate = domOfficialRate / forOfficialRate
+            results.append('Currency Layer %s FX rate is %.5g' % (underlying, fxRate))
+        else:
+            fxRate = 0
+            results.append('Could not retrieve %s FX rate from CurrencyLayer' % underlying)
 
     results.append('Using %s as the cross currency: %s and %s' % (cross_ccy.upper(), FORPAIR, DOMPAIR))
 
@@ -164,7 +171,10 @@ def fxMsg(bot, update):
     if update.message.text.split().__len__() == 4:
         cross_ccy = update.message.text.split()[3].upper()
     else:
-        cross_ccy = "BTC"
+        if underlying[-3:].upper() == 'BTC' or underlying[:3].upper() == 'BTC':
+            cross_ccy = 'USD'
+        else:
+            cross_ccy = 'BTC'
     if exchange_list == []:
         update.message.reply_text('No exchange specified. Try all or gatecoin for example')
         return

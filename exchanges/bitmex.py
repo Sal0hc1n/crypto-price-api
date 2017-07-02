@@ -33,29 +33,25 @@ class BitMEX(Exchange):
     def get_instrument(self, symbol):
         for s in self.stream.keys():
             if self.stream[s].connected:
-                instruments = self.data['instrument']
+                instruments = self.stream[s].data['instrument']
                 m = [i for i in instruments if i['symbol'] == symbol]
                 if len(m) == 0:
                     return "No match for %s" % symbol
                 i = m[0]
-                i['tickLog'] = decimal.Decimal(str(instrument['tickSize'])).as_tuple().exponent* -1
+                i['tickLog'] = Decimal(str(i['tickSize'])).as_tuple().exponent* -1
                 return i
         return "No match for %s or no stream connected" % symbol
 
     def get_quote(self, symbol, quote):
-        if quote.upper() == "LAST":
-            i = self.get_instrument(symbol)
-            return i['lastPrice']
-        if symbol in self.stream.keys():
-            if self.stream[symbol].connected:
-                try:
-                    return self.stream[symbol].data['quote'][-1:][0][self.QUOTE_DICT[quote]]
-                except KeyError as err:
-                    return "Undefined key: %s" % err
-            else:
-                return "Not connected"
-        else:
-            return None
+        i = self.get_instrument(symbol)
+        if instrument['symbol'][0] == '.':
+            return instrument['markPrice']
+        if quote.lower() == 'bid':
+            return instrument['bidPrice']
+        elif quote.lower() == 'ask':
+            return instrument['askPrice']
+        elif quote.lower() == 'last':
+            return instrument['lastPrice']
 
     def get_stream(self, symbol):
         if symbol in self.stream.keys():

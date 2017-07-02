@@ -79,7 +79,7 @@ class GateCoin(Exchange):
         message = httpMethod + url + contentType + now
         message = message.lower()
         if self.get_secret() == None:
-            self.logger.error("GateCoin credentials not found. Check your config.ini")
+            self.logger.error("Credentials not found. Check your config.ini")
             self.error = "AuthFailed"
             return None
         signature = hmac.new(self.get_secret().encode(), msg=message.encode(), digestmod=hashlib.sha256).digest()

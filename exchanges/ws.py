@@ -43,7 +43,7 @@ class Exchange_WebSocket(object):
     def exit(self):
         self.exited = True
         self.ws.close()
-        self.connected = True
+        self.connected = False
 
     def error(self, err):
         self._error = err
@@ -52,23 +52,24 @@ class Exchange_WebSocket(object):
 
     def connect(self, endpoint = "", symbol = "XBTU17"):
         self.symbol = symbol
-        subscriptions = [sub + ":" + symbol for sub in ['quote', 'trade']]
+        subscriptions = [sub + ":" + symbol for sub in ['quote', 'trade', 'orderBook10']]
         subscriptions += ['instrument']
         # requires Auth
         subscriptions += [sub + ":" + symbol for sub in ['order', 'execution']]
         subscriptions += ['margin', 'position']
-
+        self.logger.info("Subscribing to %s" % subscriptions)
         urlParts = list(urlparse(endpoint))
         urlParts[0] = urlParts[0].replace('http','ws')
         urlParts[2] = "/realtime?subscribe=" + ",".join(subscriptions)
         wsURL = urlunparse(urlParts)
         self.logger.info("Connecting to %s" % wsURL)
         self.__connect(wsURL)
-        self.logger.info("Connected to WS. Waiting for data images, could take a while")
-        self.__wait_for_symbol(symbol)
-        self.__wait_for_account()
-        self.logger.info("Got all market data. Starting")
-        self.connected = True
+        if not self.exited:
+            self.logger.info("Connected to WS. Waiting for data images, could take a while")
+            self.__wait_for_symbol(symbol)
+            self.__wait_for_account()
+            self.logger.info("Got all market data. Starting")
+            self.connected = True
 
     def __wait_for_account(self):
         while not {'margin','position','order'} <= set(self.data):
@@ -88,7 +89,7 @@ class Exchange_WebSocket(object):
         self.logger.info("Started thread")
 
         # wait for connect before continuing
-        conn_timeout = 5
+        conn_timeout = 10
         while(not self.ws.sock or not self.ws.sock.connected) and conn_timeout and not self._error:
             sleep(1)
             conn_timeout -= 1

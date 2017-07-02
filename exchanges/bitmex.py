@@ -23,14 +23,29 @@ class BitMEX(Exchange):
         if symbol in self.stream.keys():
             if (not self.stream[symbol].connected) or self.stream[symbol].exited:
                 ws = Exchange_WebSocket(self.name, self.key, self.secret, self.logger)
-                ws.connect(self.WS_TICKER_URL)
+                ws.connect(self.WS_TICKER_URL, symbol)
                 self.stream[symbol] = ws
         else:
             self.stream[symbol] = Exchange_WebSocket(self.name, self.key, self.secret, self.logger)
-            self.stream[symbol].connect(self.WS_TICKER_URL)
+            self.stream[symbol].connect(self.WS_TICKER_URL, symbol)
         return self.stream[symbol].connected
 
+    def get_instrument(self, symbol):
+        for s in self.stream.keys():
+            if self.stream[s].connected:
+                instruments = self.data['instrument']
+                m = [i for i in instruments if i['symbol'] == symbol]
+                if len(m) == 0:
+                    return "No match for %s" % symbol
+                i = m[0]
+                i['tickLog'] = decimal.Decimal(str(instrument['tickSize'])).as_tuple().exponent* -1
+                return i
+        return "No match for %s or no stream connected" % symbol
+
     def get_quote(self, symbol, quote):
+        if quote.upper() == "LAST":
+            i = self.get_instrument(symbol)
+            return i['lastPrice']
         if symbol in self.stream.keys():
             if self.stream[symbol].connected:
                 try:
@@ -45,11 +60,49 @@ class BitMEX(Exchange):
     def get_stream(self, symbol):
         if symbol in self.stream.keys():
             if self.stream[symbol].connected:
-                return self.stream[symbol]
+                return self.stream[symbol].data
             else:
                 return "Not connected"
         else:
             return None
+
+    def get_balance(self):
+        if stream:
+            # there might be a connected stream
+            for symbol in self.stream.keys():
+                if self.stream[symbol].connected:
+                    return self.streadm[symbol].data['margin'][0]
+        return "Not connected"
+
+    def get_depth(self, symbol, bid_size = 0, ask_size = 0):
+        if symbol in self.stream.keys():
+            if self.stream[symbol].connected:
+                asks = self.stream[symbol].data['orderBook10'][0]['asks']
+                bids = self.stream[symbol].data['orderBook10'][0]['bids']
+                work_ask_size = 0
+                ask = 0
+                i = 0
+                while(work_ask_size <= ask_size and i< len(asks)):
+                    prev_size = work_ask_size
+                    prev = prev_size*ask
+                    work_ask_size += asks[i][1]
+                    if ask_size != 0:
+                        work_ask_size = min(ask_size, work_ask_size)
+                    ask = ((work_ask_size - prev_size) * asks[i][0] + prev) / (work_ask_size)
+                    i+=1
+                work_bid_size = 0
+                bid = 0
+                i = 0
+                while(work_bid_size <= bid_size and i< len(bids)):
+                    prev_size = work_bid_size
+                    prev = prev_size*bid
+                    work_bid_size += bids[i][1]
+                    if bid_size != 0:
+                        work_bid_size = min(bid_size, work_bid_size)
+                    bid = ((work_bid_size - prev_size) * bids[i][0] + prev) / (work_bid_size)
+                    i+=1
+                return [bid, ask, work_bid_size, work_ask_size]
+        return [0,0,0,0]
 
     def delete_order(self, order_id):
         self.logger.info("Cancelling order %s" % order_id)

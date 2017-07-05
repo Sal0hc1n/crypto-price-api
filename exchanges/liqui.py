@@ -8,7 +8,9 @@ class Liqui(Exchange):
         'SNTETH' : 'snt_eth',
         'SNTBTC' : 'snt_btc',
         'ETHUSDT' : 'eth_usdt',
-        'BTCUSDT' : 'btc_usdt'
+        'BTCUSDT' : 'btc_usdt',
+        'EOSBTC' : 'eos_btc',
+        'EOSETH' : 'eos_eth'
     }
 
     QUOTE_DICT = {

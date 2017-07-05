@@ -10,9 +10,13 @@ class Kraken(Exchange):
         'BTCJPY' : 'XXBTZJPY',
         'ETHJPY' : 'XETHZJPY',
         'ETHUSD' : 'XETHZUSD',
-        'ETHEUR' : 'XETHZEUR'
-
+        'ETHEUR' : 'XETHZEUR',
+        'EOSUSD' : 'EOSUSD',
+        'EOSEUR' : 'EOSEUR',
+        'EOSBTC' : 'EOSXBT',
+        'EOSETH' : 'EOSETH'
     }
+
     QUOTE_DICT = {
         'ask' : 'a',
         'bid' : 'b',

@@ -8,7 +8,10 @@ class Bitfinex(Exchange):
         'BTCUSD' : 'btcusd',
         'ETHBTC' : 'ethbtc',
         'XRPBTC' : 'xrpbtc',
-        'ETHUSD' : 'ethusd'
+        'ETHUSD' : 'ethusd',
+        'EOSETH' : 'eoseth',
+        'EOSUSD' : 'eosusd',
+        'EOSBTC' : 'eosbtc'
     }
     QUOTE_DICT = {
         'last' : 'last_price',

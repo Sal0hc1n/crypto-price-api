@@ -9,7 +9,9 @@ class HitBTC(Exchange):
         'ETHBTC' : 'ETHBTC',
         'PAYETH' : 'PAYETH',
         'SNTETH' : 'SNTETH',
-        'CVCUSDT' : 'CVCUSD'
+        'CVCUSDT' : 'CVCUSD',
+        'EOSETH' : 'EOSETH',
+        'EOSBTC' : 'EOSBTC',
     }
 
     @classmethod

@@ -10,7 +10,9 @@ class Liqui(Exchange):
         'ETHUSDT' : 'eth_usdt',
         'BTCUSDT' : 'btc_usdt',
         'EOSBTC' : 'eos_btc',
-        'EOSETH' : 'eos_eth'
+        'EOSETH' : 'eos_eth',
+        'PAYETH' : 'pay_eth',
+        'PAYBTC' : 'pay_btc'
     }
 
     QUOTE_DICT = {

@@ -8,8 +8,8 @@ class Bittrex(Exchange):
         'ETHBTC' : 'BTC-ETH',
         'SNTBTC' : 'BTC-SNT',
         'SNTETH' : 'ETH-SNT',
-        'PAYETH' : 'PAY-ETH',
-        'PAYBTC' : 'PAY-BTC'
+        'PAYETH' : 'ETH-PAY',
+        'PAYBTC' : 'BTC-PAY'
     }
     QUOTE_DICT = {
         'bid' : 'Bid',

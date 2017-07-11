@@ -178,11 +178,40 @@ class GateCoin(Exchange):
         req = "Trade/Trades"
         if trade_count != 0:
             req += "?Count=%s" % int(trade_count)
+        else:
+            req += "?Count=1000"
         data = self._send_request(req, "GET")
         if data == None:
             return None
         elif data['responseStatus']['message'] == 'OK':
-            return data['transactions']
+            trade_list = data['transactions']
+            count = len(data['transactions'])
+            self.logger.debug("%s transactions downloaded" % count)
+            if count == 1000 and (trade_count > 1000 or trade_count == 0):
+                finished = False
+                while not finished:
+                    req = "Trade/UserTrades?after=%s" % count
+                    data = self._send_request(req,"GET")
+                    if data == None:
+                        self.logger.error("Error when getting additional trades")
+                        return None
+                    elif data['responseStatus']['message'] == 'OK':
+                        if data['transactions'] == []:
+                            finished = True
+                        else:
+                            self.logger.debug('Downloaded %s transactions, getting more...' % len(trade_list))
+                            new_trade_count = len(data['transactions'])
+                            if count + new_trade_count > trade_count and trade_count != 0:
+                                cut = abs(trade_count - count - new_trade_count)
+                                trade_list.extend(data['transactions'][:cut])
+                                finished = True
+                            else:
+                                trade_list.extend(data['transactions'])
+                                count += 50
+                    else:
+                        self.logger.error("Error when getting additional trades")
+                        return None
+            return trade_list
         else:
             return None
 

@@ -13,7 +13,7 @@ class GateCoin(Exchange):
         'ETHEUR' : 'ETHEUR',
         'ETHUSD' : 'ETHUSD',
         'ETHHKD' : 'ETHHKD',
-        'SNTUSD' : 'SNTUSD',
+        'SNTETH' : 'SNTETH',
         'SNTBTC' : 'SNTBTC',
         'PAYBTC' : 'PAYBTC',
         'PAYETH' : 'PAYETH'

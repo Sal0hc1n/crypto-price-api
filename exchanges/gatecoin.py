@@ -14,7 +14,9 @@ class GateCoin(Exchange):
         'ETHUSD' : 'ETHUSD',
         'ETHHKD' : 'ETHHKD',
         'SNTUSD' : 'SNTUSD',
-        'SNTBTC' : 'SNTBTC'
+        'SNTBTC' : 'SNTBTC',
+        'PAYBTC' : 'PAYBTC',
+        'PAYETH' : 'PAYETH'
     }
 
     @classmethod

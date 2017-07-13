@@ -110,7 +110,10 @@ class Exchange(ExchangeBase):
             return 0
         else:
             quote = self._quote_extractor(self.data, underlying, quote)
-        return Decimal(quote)
+        if quote is None:
+            return 0
+        else:
+            return Decimal(quote)
 
     def get_supported_underlyings(self):
         return sorted(self.underlying_dict.keys())

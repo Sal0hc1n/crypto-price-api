@@ -7,6 +7,7 @@ from uuid import uuid4
 import logging
 import exchanges
 import requests
+import math
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s-%(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,6 +15,13 @@ logger = logging.getLogger(__name__)
 BOTNAME = '@BotName_Bot'
 TOKEN = 'TOKEN'
 CL_API_KEY = 'CLAPIKEY'
+
+millnames = ['',' k',' mio',' bio',' trillion']
+
+def millify(n):
+    n = float(n)
+    millidx = max(0,min(len(millnames)-1, int(math.floor(0 if n == 0 else math.log10(abs(n))/3))))
+    return '{:.1f}{}'.format(n / 10**(3 * millidx), millnames[millidx])
 
 def startMsg(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="Type /list to get a list of supported exchanges and underlyings.\nType /price <underlying> <exchange> to retrieve a price.\nFor example /price btcusd kraken")
@@ -29,7 +37,98 @@ def listExchangesMsg(bot, update):
 def list_text():
     exchange_text = 'List of supported exchanges:\n'+'\n'.join(sorted(exchanges.exchange_list.keys()))
     underlyings_text = 'List of available underlyings:\n'+'\n'.join(sorted(exchanges.get_underlyings_list()))
-    return exchange_text + '\n\n' + underlyings_text
+    end_text = 'Try /exchange <exchange> to price all underlyings availablle on an exchange'
+    return exchange_text + '\n\n' + underlyings_text + '\n\n' + end_text
+
+def summaryMsg(bot, update):
+    logger.info("Received /summary command from %s" % update.effective_user)
+    logger.info("Command content: %s" % update.message.text)
+    if update.message.text.split().__len__() < 1:
+        ccy = ['BTC']
+    else:
+        ccy = update.message.text.split()[1:]
+    update.message.reply_text('\n'.join(summary(ccy)))
+
+def summary(ccy_list):
+    mapping = {
+        'btc' : 'bitcoin',
+        'eth' : 'ethereum',
+        'snt' : 'status',
+        'xrp' : 'ripple',
+        'xmr' : 'monero',
+        'gno' : 'gnosis-gno',
+        'gnosis' : 'gnosis-gno'
+    }
+    results = []
+    for ccy in ccy_list:
+        ccy = ccy.lower()
+        if ccy in mapping.keys():
+            ccy = mapping[ccy]
+        try:
+            r = requests.get('https://api.coinmarketcap.com/v1/ticker/%s' % ccy)
+            r.raise_for_status()
+            j = r.json()
+        except requests.exceptions.RequestException as err:
+            print(err)
+            results.append("Something went wrong for currency %s" % ccy)
+            results.append('')
+            continue
+        name = j[0]['name']
+        price_usd = j[0]['price_usd']
+        price_btc = j[0]['price_btc']
+        vol_usd = millify(j[0]['24h_volume_usd'])
+        mktcap_usd = millify(j[0]['market_cap_usd'])
+        rank = int(j[0]['rank'])
+        pchg_1h = j[0]['percent_change_1h']
+        pchg_24h = j[0]['percent_change_24h']
+        pchg_7d = j[0]['percent_change_7d']
+        results.append('%s: %s (USD), %s (BTC). Changes: %s%% (1h), %s%% (24h), %s%% (7d).' % (name, price_usd, price_btc, pchg_1h, pchg_24h, pchg_7d))
+        if str(rank)[-1:] == '1' and str(rank)[-2:] != '11':
+            suffix = 'st'
+        elif str(rank)[-1:] == '2' and str(rank)[-2:] != '12':
+            suffix = 'nd'
+        elif str(rank)[-1:] == '3' and str(rank)[-2:] != '13':
+            suffix = 'rd'
+        else:
+            suffix = 'th'
+        results.append('%s: Volumes in past 24h: %s USD. Market cap: %s USD. %s%s market cap.' % (name, vol_usd, mktcap_usd, rank, suffix))
+        results.append('')
+    return results
+
+def exchangeMsg(bot, update):
+    logger.info("Received /exchange command from %s" % update.effective_user)
+    logger.info("Command content: %s" % update.message.text)
+    if update.message.text.split().__len__() <= 1:
+        update.message.reply_text('Syntax is "/exchange <exchange1> <exchange2> <...>".\nTry "/exchange all" to price all underlying on all supported exchanges (can take a while).\nType /list to see supported exchanges')
+        return
+    exchange_list = update.message.text.split()[1:]
+    if exchange_list == ['all']:
+        exchange_list = exchanges.get_exchanges_list()
+    update.message.reply_text('\n'.join(exchange(exchange_list)))
+
+def exchange(exchange_list):
+    results = []
+    for en in exchange_list:
+        try:
+            e = exchanges.get_exchange(en.lower())
+        except:
+            results.append("Uknown exchange %s" % en)
+            continue
+        results.append("%s:\n" % en)
+        for ul in e.get_supported_underlyings():
+            bid = e.get_quote(ul,'bid')
+            ask = e.get_quote(ul,'ask')
+            last = e.get_quote(ul,'last')
+            if bid == 0 or ask == 0:
+                spread = 1
+            else:
+                spread = (ask - bid) / ((ask+bid)/2)
+            if last > 1:
+                results.append("%s: Last trade %.2f. Market %.2f/ %.2f (%.1f%% wide)" % (ul,last, bid, ask, spread * 100))
+            else:
+                results.append("%s: Last trade %.3g. Market %.3g / %.3g (%.1f%% wide)" % (ul,last, bid, ask, spread * 100))
+        results.append("--------------")
+    return results
 
 def price(underlying, exchange_list):
     if underlying == 'BITCOIN':
@@ -220,11 +319,15 @@ def main():
     list_exchanges_handler = CommandHandler('list', listExchangesMsg)
     price_handler = CommandHandler('price', priceMsg)
     fx_handler = CommandHandler('fx',fxMsg)
+    exchange_handler = CommandHandler('exchange',exchangeMsg)
+    summary_handler = CommandHandler('summary',summaryMsg)
     inline_query_handler = InlineQueryHandler(inline_query)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(list_exchanges_handler)
     dispatcher.add_handler(price_handler)
     dispatcher.add_handler(fx_handler)
+    dispatcher.add_handler(exchange_handler)
+    dispatcher.add_handler(summary_handler)
     dispatcher.add_handler(inline_query_handler)
 
     unknown_handler = MessageHandler(Filters.text, unknownMsg)

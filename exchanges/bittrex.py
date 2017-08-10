@@ -10,7 +10,11 @@ class Bittrex(Exchange):
         'SNTETH' : 'ETH-SNT',
         'PAYETH' : 'ETH-PAY',
         'PAYBTC' : 'BTC-PAY',
-        'CVCBTC' : 'BTC-CVC'
+        'CVCBTC' : 'BTC-CVC',
+        'XMRBTC' : 'BTC-XMR',
+        'OMGBTC' : 'BTC-OMG',
+        'BCCBTC' : 'BTC-BCC',
+        'MUSICBTC' : 'BTC-MUSIC'
     }
     QUOTE_DICT = {
         'bid' : 'Bid',

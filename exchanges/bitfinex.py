@@ -11,7 +11,12 @@ class Bitfinex(Exchange):
         'ETHUSD' : 'ethusd',
         'EOSETH' : 'eoseth',
         'EOSUSD' : 'eosusd',
-        'EOSBTC' : 'eosbtc'
+        'EOSBTC' : 'eosbtc',
+        'OMGBTC' : 'omgbtc',
+        'OMGUSD' : 'omgusd',
+        'OMGETH' : 'omgeth',
+        'BCCBTC' : 'bccbtc',
+        'BCCUSD' : 'bccusd'
     }
     QUOTE_DICT = {
         'last' : 'last_price',

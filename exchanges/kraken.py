@@ -14,7 +14,17 @@ class Kraken(Exchange):
         'EOSUSD' : 'EOSUSD',
         'EOSEUR' : 'EOSEUR',
         'EOSBTC' : 'EOSXBT',
-        'EOSETH' : 'EOSETH'
+        'EOSETH' : 'EOSETH',
+        'USDTUSD' : 'USDTZUSD',
+        'DASHUSD' : 'DASHUSD',
+        'DASHBTC' : 'DASHXBT',
+        'ICNBTC' : 'XICNXXBT',
+        'ICNETH' : 'XICNXETH',
+        'XMRUSD' : 'XXMRZUSD',
+        'XMRBTC' : 'XXMRXXBT',
+        'BCCBTC' : 'BCHXBT',
+        'BCHUSD' : 'BCHUSD',
+        'BCHEUR' : 'BCHEUR'
     }
 
     QUOTE_DICT = {

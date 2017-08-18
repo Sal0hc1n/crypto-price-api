@@ -15,8 +15,8 @@ class Bitfinex(Exchange):
         'OMGBTC' : 'omgbtc',
         'OMGUSD' : 'omgusd',
         'OMGETH' : 'omgeth',
-        'BCCBTC' : 'bccbtc',
-        'BCCUSD' : 'bccusd'
+        'BCHBTC' : 'bccbtc',
+        'BCHUSD' : 'bccusd'
     }
     QUOTE_DICT = {
         'last' : 'last_price',

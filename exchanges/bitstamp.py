@@ -7,6 +7,9 @@ class Bitstamp(Exchange):
         'BTCUSD' : 'btcusd',
         'BTCEUR' : 'btceur',
         'XRPBTC' : 'xrpbtc',
+        'ETHUSD' : 'ethusd',
+        'ETHEUR' : 'etheur',
+        'ETHBTC' : 'ethbtc',
         'XRPEUR' : 'xrpeur',
         'XRPUSD' : 'xrpusd'
     }

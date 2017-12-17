@@ -6,7 +6,8 @@ class Poloniex(Exchange):
     UNDERLYING_DICT = {
         'BTCUSDT' : 'USDT_BTC',
         'ETHBTC' : 'BTC_ETH',
-        'XRPBTC' : 'BTC_XRP'
+        'XRPBTC' : 'BTC_XRP',
+        'SCBTC' : 'BTC_SC'
     }
     QUOTE_DICT = {
         'bid' : 'highestBid',

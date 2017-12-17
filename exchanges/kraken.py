@@ -22,7 +22,7 @@ class Kraken(Exchange):
         'ICNETH' : 'XICNXETH',
         'XMRUSD' : 'XXMRZUSD',
         'XMRBTC' : 'XXMRXXBT',
-        'BCCBTC' : 'BCHXBT',
+        'BCHBTC' : 'BCHXBT',
         'BCHUSD' : 'BCHUSD',
         'BCHEUR' : 'BCHEUR'
     }

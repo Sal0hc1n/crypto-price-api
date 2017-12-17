@@ -13,7 +13,9 @@ class Bittrex(Exchange):
         'CVCBTC' : 'BTC-CVC',
         'XMRBTC' : 'BTC-XMR',
         'OMGBTC' : 'BTC-OMG',
-        'BCCBTC' : 'BTC-BCC',
+        'BCHBTC' : 'BTC-BCC',
+        'SCBTC' : 'BTC-SC',
+        'XRPBTC' : 'BTC-XRP',
         'MUSICBTC' : 'BTC-MUSIC'
     }
     QUOTE_DICT = {

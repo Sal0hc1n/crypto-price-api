@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from telegram import InlineQueryResultArticle,InputTextMessageContent
 from telegram.ext import Updater
@@ -18,13 +18,70 @@ CL_API_KEY = 'CLAPIKEY'
 
 millnames = ['',' k',' mio',' bio',' trillion']
 
+bm = exchanges.get_exchange('bitmex')
+
 def millify(n):
-    n = float(n)
+    try:
+        n = float(n)
+    except:
+        n = 0
     millidx = max(0,min(len(millnames)-1, int(math.floor(0 if n == 0 else math.log10(abs(n))/3))))
     return '{:.1f}{}'.format(n / 10**(3 * millidx), millnames[millidx])
 
 def startMsg(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text="Type /list to get a list of supported exchanges and underlyings.\nType /price <underlying> <exchange> to retrieve a price.\nFor example /price btcusd kraken")
+
+def bitmexMsg(bot, update):
+    logger.info("Received /bitmex command from %s" % update.effective_user)
+    if update.message.text.split().__len__()<=1:
+        bot.send_message(chat_id=update.message.chat_id, text="Syntax is /bitmex <instrument> <expiry>. For example /bitmex XBT H18")
+    else:
+        fut = update.message.text.split()[1].upper()
+        update.message.reply_text(bitmex(fut))
+
+def bitmex(fut):
+    if fut[:3] == 'XBT':
+        exch = ['gdax', 'bitstamp']
+        spot = 'BTCUSD'
+    else:
+        exch = ['poloniex']
+        spot = fut[:3] + 'BTC'
+    fut_stream = bm.get_stream(fut)
+    if fut_stream == None:
+        fut_stream = bm.init_symbol(fut)
+    fut_bid = bm.get_quote(fut, 'bid')
+    fut_ask = bm.get_quote(fut, 'ask')
+    if fut_bid == None or fut_ask == None:
+        message = "Something went wrong, check future code"
+        return message
+    spot_bid = 0
+    spot_ask = 0
+    i = 0
+    for en in exch:
+        e = exchanges.get_exchange(en)
+        spot_bid += e.get_quote(spot, 'bid')
+        spot_ask += e.get_quote(spot, 'ask')
+        i+=1
+    spot_bid = float(spot_bid / i)
+    spot_ask = float(spot_ask / i)
+    basis_bid = fut_bid - spot_ask
+    basis_ask = fut_ask - spot_bid
+    spot_mid = (spot_bid + spot_ask)/2
+    fut_mid = (fut_ask + fut_bid)/2
+    basis_mid = (basis_ask + basis_bid)/2
+    if basis_ask < 0:
+        basis_premium = 100 * basis_ask / spot_mid
+    else:
+        basis_premium = 100 * basis_bid / spot_mid
+    if spot_bid > 1:
+        message = "Spot %s price is %.2f: %.2f / %.2f" % (spot, spot_mid, spot_bid, spot_ask) + '\n'
+        message += "Fut %s price is %.2f: %.2f / %.2f" % (fut, fut_mid, fut_bid,fut_ask) + '\n'
+        message += "Basis is %.2f: %.2f / %.2f. Premium of %.1f%%" % (basis_mid, basis_bid, basis_ask, basis_premium)
+    else:
+        message = "Spot %s price is %.4g: %.4g / %.4g" % (spot, spot_mid, spot_bid, spot_ask) + '\n'
+        message += "Fut %s price is %.4g: %.4g / %.4g" % (fut,fut_mid, fut_bid, fut_ask) + '\n'
+        message += "Basis is %.4g: %.4g / %.4g. Premium of %.1f%%" % (basis_mid, basis_bid, basis_ask, basis_premium)
+    return message
 
 def unknownMsg(bot, update):
     logger.info("Received unknown command from %s: %s" % (update.effective_user, update.message.text))
@@ -43,8 +100,8 @@ def list_text():
 def summaryMsg(bot, update):
     logger.info("Received /summary command from %s" % update.effective_user)
     logger.info("Command content: %s" % update.message.text)
-    if update.message.text.split().__len__() < 1:
-        ccy = ['BTC']
+    if update.message.text.split().__len__() <= 1:
+        ccy = ['globalsummary']
     else:
         ccy = update.message.text.split()[1:]
     update.message.reply_text('\n'.join(summary(ccy)))
@@ -57,15 +114,32 @@ def summary(ccy_list):
         'xrp' : 'ripple',
         'xmr' : 'monero',
         'gno' : 'gnosis-gno',
-        'gnosis' : 'gnosis-gno'
+        'gnosis' : 'gnosis-gno',
+        'pay' : 'tenx',
+        'cvc' : 'civic',
+        'dnt' : 'district0x',
+        'san' : 'santiment',
+        'omg' : 'omisego',
+        'zerox' : '0x',
+        'request' : 'request-network',
+        'req' : 'request-network',
+        'bch' : 'bitcoin-cash',
+        'cash' : 'cash-poker-pro',
+        'zec' : 'zcash',
+        'xlm' : 'stellar',
+        'zrx' : '0x'
     }
     results = []
     for ccy in ccy_list:
         ccy = ccy.lower()
+        url = 'https://api.coinmarketcap.com/v1/ticker/%s' % ccy
         if ccy in mapping.keys():
             ccy = mapping[ccy]
+            url = 'https://api.coinmarketcap.com/v1/ticker/%s' % ccy
+        elif ccy == 'globalsummary':
+            url = 'https://api.coinmarketcap.com/v1/global/'
         try:
-            r = requests.get('https://api.coinmarketcap.com/v1/ticker/%s' % ccy)
+            r = requests.get(url)
             r.raise_for_status()
             j = r.json()
         except requests.exceptions.RequestException as err:
@@ -73,26 +147,36 @@ def summary(ccy_list):
             results.append("Something went wrong for currency %s" % ccy)
             results.append('')
             continue
-        name = j[0]['name']
-        price_usd = j[0]['price_usd']
-        price_btc = j[0]['price_btc']
-        vol_usd = millify(j[0]['24h_volume_usd'])
-        mktcap_usd = millify(j[0]['market_cap_usd'])
-        rank = int(j[0]['rank'])
-        pchg_1h = j[0]['percent_change_1h']
-        pchg_24h = j[0]['percent_change_24h']
-        pchg_7d = j[0]['percent_change_7d']
-        results.append('%s: %s (USD), %s (BTC). Changes: %s%% (1h), %s%% (24h), %s%% (7d).' % (name, price_usd, price_btc, pchg_1h, pchg_24h, pchg_7d))
-        if str(rank)[-1:] == '1' and str(rank)[-2:] != '11':
-            suffix = 'st'
-        elif str(rank)[-1:] == '2' and str(rank)[-2:] != '12':
-            suffix = 'nd'
-        elif str(rank)[-1:] == '3' and str(rank)[-2:] != '13':
-            suffix = 'rd'
+        if ccy == 'globalsummary':
+            mkt_cap_usd = millify(j['total_market_cap_usd'])
+            vol_usd = millify(j['total_24h_volume_usd'])
+            btc_pct = j['bitcoin_percentage_of_market_cap']
+            nb_ccy = int(j['active_currencies']) + int(j['active_assets'])
+            results.append('Total crypto market cap: %s (USD)' % mkt_cap_usd)
+            results.append('Last 24h volume: %s (USD)'% vol_usd)
+            results.append('Bitcoin share of total market cap: %s%%' % btc_pct)
+            results.append('Number of tokens in circulation: %s' % nb_ccy)
         else:
-            suffix = 'th'
-        results.append('%s: Volumes in past 24h: %s USD. Market cap: %s USD. %s%s market cap.' % (name, vol_usd, mktcap_usd, rank, suffix))
-        results.append('')
+            name = j[0]['name']
+            price_usd = j[0]['price_usd']
+            price_btc = j[0]['price_btc']
+            vol_usd = millify(j[0]['24h_volume_usd'])
+            mktcap_usd = millify(j[0]['market_cap_usd'])
+            rank = int(j[0]['rank'])
+            pchg_1h = j[0]['percent_change_1h']
+            pchg_24h = j[0]['percent_change_24h']
+            pchg_7d = j[0]['percent_change_7d']
+            results.append('%s: %s (USD), %s (BTC). Changes: %s%% (1h), %s%% (24h), %s%% (7d).' % (name, price_usd, price_btc, pchg_1h, pchg_24h, pchg_7d))
+            if str(rank)[-1:] == '1' and str(rank)[-2:] != '11':
+                suffix = 'st'
+            elif str(rank)[-1:] == '2' and str(rank)[-2:] != '12':
+                suffix = 'nd'
+            elif str(rank)[-1:] == '3' and str(rank)[-2:] != '13':
+                suffix = 'rd'
+            else:
+                suffix = 'th'
+            results.append('%s: Volumes in past 24h: %s USD. Market cap: %s USD. %s%s market cap.' % (name, vol_usd, mktcap_usd, rank, suffix))
+            results.append('')
     return results
 
 def exchangeMsg(bot, update):
@@ -321,6 +405,7 @@ def main():
     fx_handler = CommandHandler('fx',fxMsg)
     exchange_handler = CommandHandler('exchange',exchangeMsg)
     summary_handler = CommandHandler('summary',summaryMsg)
+    bitmex_handler = CommandHandler('bitmex', bitmexMsg)
     inline_query_handler = InlineQueryHandler(inline_query)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(list_exchanges_handler)
@@ -328,6 +413,7 @@ def main():
     dispatcher.add_handler(fx_handler)
     dispatcher.add_handler(exchange_handler)
     dispatcher.add_handler(summary_handler)
+    dispatcher.add_handler(bitmex_handler)
     dispatcher.add_handler(inline_query_handler)
 
     unknown_handler = MessageHandler(Filters.text, unknownMsg)

@@ -37,6 +37,7 @@ class BitMEX(Exchange):
                 m = [i for i in instruments if i['symbol'] == symbol]
                 if len(m) == 0:
                     self.logger.error("No match for %s" % symbol)
+                    continue
                 i = m[0]
                 i['tickLog'] = Decimal(str(i['tickSize'])).as_tuple().exponent * -1
                 return i

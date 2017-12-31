@@ -24,6 +24,7 @@ class Exchange_WebSocket(object):
             self.logger.addHandler(lh)
         else:
             self.logger = loggerObject
+        self.ws = None
         self.key = key
         self.secret = secret
         self.data = {}
@@ -40,7 +41,8 @@ class Exchange_WebSocket(object):
 
     def exit(self):
         self.exited = True
-        self.ws.close()
+        if self.ws is not None:
+            self.ws.close()
         self.connected = False
 
     def error(self, err):
@@ -104,6 +106,10 @@ class Exchange_WebSocket(object):
 
     def __get_auth(self):
         self.logger.info("Authenticating to WS with API Key")
+        if self.get_secret() == None or self.get_secret() == "":
+            self.logger.error("Credentials not found. Check your config.ini")
+            self.error("AuthFailed")
+            return None
         nonce = self.generate_nonce()
         return ["api-nonce: " + str(nonce), "api-signature: " + self.generate_signature(self.secret, 'GET', '/realtime', nonce, ''), "api-key: " + self.key]
 

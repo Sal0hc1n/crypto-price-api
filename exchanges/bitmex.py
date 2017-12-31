@@ -36,14 +36,17 @@ class BitMEX(Exchange):
                 instruments = self.stream[s].data['instrument']
                 m = [i for i in instruments if i['symbol'] == symbol]
                 if len(m) == 0:
-                    return "No match for %s" % symbol
+                    self.logger.error("No match for %s" % symbol)
                 i = m[0]
                 i['tickLog'] = Decimal(str(i['tickSize'])).as_tuple().exponent * -1
                 return i
-        return "No match for %s or no stream connected" % symbol
+        self.logger.error("No match for %s or no stream connected" % symbol)
+        return None
 
     def get_quote(self, symbol, quote):
         i = self.get_instrument(symbol)
+        if i is None:
+            return None
         if i['symbol'][0] == '.':
             return i['markPrice']
         if quote.lower() == 'bid':

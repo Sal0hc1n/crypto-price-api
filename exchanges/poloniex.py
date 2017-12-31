@@ -7,6 +7,11 @@ class Poloniex(Exchange):
         'BTCUSDT' : 'USDT_BTC',
         'ETHBTC' : 'BTC_ETH',
         'XRPBTC' : 'BTC_XRP',
+        'LTCBTC' : 'BTC_LTC',
+        'DASHBTC' : 'BTC_DASH',
+        'BTHBTC' : 'BTC_BCH',
+        'XMRBTC' : 'BTC_XMR',
+        'ZECBTC' : 'BTC_ZEC',
         'SCBTC' : 'BTC_SC'
     }
     QUOTE_DICT = {

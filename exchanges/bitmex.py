@@ -61,7 +61,8 @@ class BitMEX(Exchange):
             if self.stream[symbol].connected:
                 return self.stream[symbol].data
             else:
-                return "Not connected"
+                self.logger.error("Stream %s not connected" % symbol)
+                return None
         else:
             return None
 

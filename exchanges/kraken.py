@@ -11,8 +11,6 @@ class Kraken(Exchange):
         'ETHJPY' : 'XETHZJPY',
         'ETHUSD' : 'XETHZUSD',
         'ETHEUR' : 'XETHZEUR',
-        'EOSUSD' : 'EOSUSD',
-        'EOSEUR' : 'EOSEUR',
         'EOSBTC' : 'EOSXBT',
         'EOSETH' : 'EOSETH',
         'USDTUSD' : 'USDTZUSD',

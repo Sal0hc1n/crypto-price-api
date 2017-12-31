@@ -1,11 +1,10 @@
 import datetime
-import ConfigParser
+import configparser as ConfigParser
 import os
 from decimal import Decimal
 import logging
 
 from exchanges.helpers import get_response, get_datetime
-
 
 def weekly_expiry():
     d = datetime.date.today()
@@ -13,7 +12,8 @@ def weekly_expiry():
         d += datetime.timedelta(1)
     return d
 
-def  quarter_expiry():
+
+def quarter_expiry():
     ref = datetime.date.today()
     if ref.month < 4:
         d = datetime.date(ref.year, 3, 31)
@@ -22,29 +22,31 @@ def  quarter_expiry():
     elif ref.month < 10:
         d = datetime.date(ref.year, 9, 30)
     else:
-        d= datetime.date(ref.year, 12, 31)
+        d = datetime.date(ref.year, 12, 31)
     while d.weekday() != 5:
         d -= datetime.timedelta(1)
     return d
 
+
 def date_stamp(d):
     return d.strftime('%Y-%m-%d')
+
 
 def time_stamp(d):
     return d.strftime('%H:%M:%S')
 
-class ExchangeBase(object):
 
+class ExchangeBase(object):
     TICKER_URL = None
     SUPPORTED_UNDERLYINGS = []
     UNDERLYING_DICT = {}
     QUOTE_DICT = {
-        'bid' : 'bid',
-        'ask' : 'ask',
-        'last' : 'last'
+        'bid': 'bid',
+        'ask': 'ask',
+        'last': 'last'
     }
 
-    def __init__(self, exchangeName, loggerObject = None, *args, **kwargs):
+    def __init__(self, exchangeName, loggerObject=None, *args, **kwargs):
         if type(loggerObject) is not logging.getLoggerClass():
             self.logger = logging.getLogger(exchangeName)
             # default log to stdout. override this if needed
@@ -65,8 +67,8 @@ class ExchangeBase(object):
         self.logger.debug("Loading %s" % cPath)
         c.read(cPath)
         try:
-            self.key = c.get(self.name,'key')
-            self.secret = c.get(self.name,'secret')
+            self.key = c.get(self.name, 'key')
+            self.secret = c.get(self.name, 'secret')
         except ConfigParser.NoSectionError as err:
             self.error = str(err)
             self.key = None
@@ -99,6 +101,7 @@ class ExchangeBase(object):
         if callback is not None:
             callback(self, client_data)
 
+
 class Exchange(ExchangeBase):
 
     def _quote_extractor(self, data, underlying, quote):
@@ -120,6 +123,7 @@ class Exchange(ExchangeBase):
 
     def get_supported_quotes(self):
         return sorted(self.quote_dict.keys())
+
 
 class FuturesExchange(ExchangeBase):
 

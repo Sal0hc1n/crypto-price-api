@@ -1,11 +1,9 @@
-from decimal import Decimal
 import websocket
 import threading
 import logging
 import time
 import hmac
-from future.builtins import bytes
-from urlparse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse
 import hashlib
 from time import sleep
 import json

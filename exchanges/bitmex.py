@@ -1,21 +1,21 @@
 from decimal import Decimal
 
 import time, base64, hmac, json, hashlib, requests, uuid
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from exchanges.base import Exchange
 from exchanges.ws import Exchange_WebSocket
 import logging
 
-class BitMEX(Exchange):
 
+class BitMEX(Exchange):
     TICKER_URL = 'https://www.bitmex.com/api/v1/'
     WS_TICKER_URL = 'https://www.bitmex.com/api/v1/'
     stream = {}
 
     QUOTE_DICT = {
-        'bid' : 'bidPrice',
-        'ask' : 'askPrice'
+        'bid': 'bidPrice',
+        'ask': 'askPrice'
     }
 
     def init_symbol(self, symbol):
@@ -38,20 +38,20 @@ class BitMEX(Exchange):
                 if len(m) == 0:
                     return "No match for %s" % symbol
                 i = m[0]
-                i['tickLog'] = Decimal(str(i['tickSize'])).as_tuple().exponent* -1
+                i['tickLog'] = Decimal(str(i['tickSize'])).as_tuple().exponent * -1
                 return i
         return "No match for %s or no stream connected" % symbol
 
     def get_quote(self, symbol, quote):
         i = self.get_instrument(symbol)
-        if instrument['symbol'][0] == '.':
-            return instrument['markPrice']
+        if i['symbol'][0] == '.':
+            return i['markPrice']
         if quote.lower() == 'bid':
-            return instrument['bidPrice']
+            return i['bidPrice']
         elif quote.lower() == 'ask':
-            return instrument['askPrice']
+            return i['askPrice']
         elif quote.lower() == 'last':
-            return instrument['lastPrice']
+            return i['lastPrice']
 
     def get_stream(self, symbol):
         if symbol in self.stream.keys():
@@ -70,7 +70,7 @@ class BitMEX(Exchange):
                     return self.streadm[symbol].data['margin'][0]
         return "Not connected"
 
-    def get_depth(self, symbol, bid_size = 0, ask_size = 0):
+    def get_depth(self, symbol, bid_size=0, ask_size=0):
         if symbol in self.stream.keys():
             if self.stream[symbol].connected:
                 asks = self.stream[symbol].data['orderBook10'][0]['asks']
@@ -78,40 +78,40 @@ class BitMEX(Exchange):
                 work_ask_size = 0
                 ask = 0
                 i = 0
-                while(work_ask_size <= ask_size and i< len(asks)):
+                while (work_ask_size <= ask_size and i < len(asks)):
                     prev_size = work_ask_size
-                    prev = prev_size*ask
+                    prev = prev_size * ask
                     work_ask_size += asks[i][1]
                     if ask_size != 0:
                         work_ask_size = min(ask_size, work_ask_size)
                     ask = ((work_ask_size - prev_size) * asks[i][0] + prev) / (work_ask_size)
-                    i+=1
+                    i += 1
                 work_bid_size = 0
                 bid = 0
                 i = 0
-                while(work_bid_size <= bid_size and i< len(bids)):
+                while (work_bid_size <= bid_size and i < len(bids)):
                     prev_size = work_bid_size
-                    prev = prev_size*bid
+                    prev = prev_size * bid
                     work_bid_size += bids[i][1]
                     if bid_size != 0:
                         work_bid_size = min(bid_size, work_bid_size)
                     bid = ((work_bid_size - prev_size) * bids[i][0] + prev) / (work_bid_size)
-                    i+=1
+                    i += 1
                 return [bid, ask, work_bid_size, work_ask_size]
-        return [0,0,0,0]
+        return [0, 0, 0, 0]
 
     def delete_order(self, order_id):
         self.logger.info("Cancelling order %s" % order_id)
         params = {'clOrdID': order_id}
-        return self._send_request('order','DELETE',params)
+        return self._send_request('order', 'DELETE', params)
 
     def place_order(self, symbol, quantity, price):
         if price < 0:
             self.logger.error("Price must be postive")
             return None
         clOrdID = self.name + base64.b64encode(uuid.uuid4().bytes).decode('utf-8').rstrip('=\n')
-        params = {'symbol': symbol, 'orderQty': quantity, 'price': price, 'clOrdID' : clOrdID}
-        return self._send_request('order','POST',params)
+        params = {'symbol': symbol, 'orderQty': quantity, 'price': price, 'clOrdID': clOrdID}
+        return self._send_request('order', 'POST', params)
 
     def buy(self, symbol, quantity, price):
         return self.place_order(symbol, quantity, price)
@@ -136,10 +136,10 @@ class BitMEX(Exchange):
             return None
         signature = hmac.new(self.get_secret().encode(), message.encode(), digestmod=hashlib.sha256).hexdigest()
         headers = {
-            'api-nonce' : str(nonce),
-            'api-key' : self.get_key(),
-            'api-signature' : signature,
-            'Content-Type' : contentType
+            'api-nonce': str(nonce),
+            'api-key': self.get_key(),
+            'api-signature': signature,
+            'Content-Type': contentType
         }
         if httpMethod == 'DELETE':
             R = requests.delete
@@ -163,4 +163,3 @@ class BitMEX(Exchange):
         except ValueError as err:
             self.logger.error(str(url) + ":" + str(response) + ", " + str(err))
             return None
-

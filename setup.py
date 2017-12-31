@@ -3,12 +3,11 @@
 
 from setuptools import (
     setup,
-    find_packages,
 )
 
 setup(
     name='cryptocurrency-price-api',
-    version = '0.2',
+    version='0.3',
     author='Anil Daoud',
     author_email='anil+git@via.ecp.fr',
     url='https://github.com/AnilDaoud/cryptocurrency-price-api',
@@ -16,7 +15,7 @@ setup(
     long_description='''Price API's for cryptycurrencies exchanges''',
     license='MIT',
     packages=['exchanges'],
-    install_requires = ['requests', 'python-dateutil', 'websocket-client'],
-    use_2to3 = True,
-    include_package_data=True
+    install_requires=['requests', 'python-dateutil', 'websocket-client', 'configparser'],
+    include_package_data=True,
+    use_2to3=True
 )

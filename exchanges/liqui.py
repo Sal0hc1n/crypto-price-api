@@ -21,6 +21,9 @@ class Liqui(Exchange):
         'last' : 'last'
     }
 
-    @classmethod
     def _quote_extractor(cls, data, underlying, quote):
-        return data[cls.UNDERLYING_DICT[underlying]][cls.QUOTE_DICT[quote]]
+        if cls.UNDERLYING_DICT[underlying] in data.keys():
+            return data[cls.UNDERLYING_DICT[underlying]][cls.QUOTE_DICT[quote]]
+        else:
+            cls.logger.error(data)
+            return None

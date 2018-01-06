@@ -68,11 +68,11 @@ class BitMEX(Exchange):
             return None
 
     def get_balance(self):
-        if stream:
+        if self.stream is not None:
             # there might be a connected stream
             for symbol in self.stream.keys():
                 if self.stream[symbol].connected:
-                    return self.streadm[symbol].data['margin'][0]
+                    return self.stream[symbol].data['margin'][0]
         return "Not connected"
 
     def get_depth(self, symbol, bid_size=0, ask_size=0):

@@ -16,6 +16,7 @@ class Bittrex(Exchange):
         'BCHBTC' : 'BTC-BCC',
         'SCBTC' : 'BTC-SC',
         'XRPBTC' : 'BTC-XRP',
+        'ADABTC' : 'BTC-ADA',
         'MUSICBTC' : 'BTC-MUSIC'
     }
     QUOTE_DICT = {

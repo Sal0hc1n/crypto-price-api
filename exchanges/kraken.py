@@ -31,6 +31,9 @@ class Kraken(Exchange):
         'last' : 'c'
     }
 
-    @classmethod
     def _quote_extractor(cls, data, underlying, quote):
-        return data.get('result').get(cls.UNDERLYING_DICT[underlying]).get(cls.QUOTE_DICT[quote])[0]
+        if data.get('result') is None:
+            cls.logger.error(data)
+            return None
+        else:
+            return data.get('result').get(cls.UNDERLYING_DICT[underlying]).get(cls.QUOTE_DICT[quote])[0]

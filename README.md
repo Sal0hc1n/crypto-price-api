@@ -9,11 +9,12 @@ exchanges which have publicly available API's, as well as a unified
 representation of that data rather than exchange specific ones.
 
 ### Quick Guide
-
-        >>> from exchanges.bitfinex import Bitfinex
-        >>> Bitfinex().get_quote('BTCUSD', 'bid')
-        Decimal('2355.1')
-
+```python
+>>> from exchanges.bitfinex import Bitfinex
+>>> Bitfinex().get_quote('BTCUSD', 'bid')
+    Decimal('2355.1')
+```
+        
 ### Dependencies
 
 The only dependency is on the `requests` library. You can either
@@ -25,13 +26,14 @@ directory.
 See test.py for some use cases. Call exchanges.get_exchanges_list() to get a list of supported exchanges.
 
 All of the Exchange classes expose the interface below:
-
-	>>> import exchanges
-	>>> exchanges.get_exchange('gatecoin').get_supported_quotes()
-	['bid', 'ask', 'last']	
-	>>> exchanges.get_exchange('gatecoin').get_supported_underlyings()
-	['BTCUSD', 'BTCEUR', 'ETHBTC']
-	>>> exchanges.get_exchange('bitstamp').get_quote('BTCUSD', 'ask')
-	Decimal('2445.05')
+```python
+>>> import exchanges
+>>> exchanges.get_exchange('gatecoin').get_supported_quotes()
+['bid', 'ask', 'last']	
+>>> exchanges.get_exchange('gatecoin').get_supported_underlyings()
+['BTCUSD', 'BTCEUR', 'ETHBTC']
+>>> exchanges.get_exchange('bitstamp').get_quote('BTCUSD', 'ask')
+Decimal('2445.05')
+```
 
 A simple Telegram bot using this API is also included in example folder

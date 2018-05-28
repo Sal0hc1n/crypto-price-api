@@ -1,6 +1,6 @@
 *.pyc
-*.py.swp
 .DS_Store
+*.py.swp
 build
 dist
 *.egg-info

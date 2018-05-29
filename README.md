@@ -1,6 +1,7 @@
 Crypto Price API
 ----------------------------------------------------------------------
 ![status](https://img.shields.io/badge/Status-Testing-yellow.svg)
+[![Python](https://img.shields.io/badge/python-powered-blue.svg)](https://www.python.org/) </br>
 If you are trying to do interesting things with cryptocurrency price data,
 you shouldn't have to be concerned with the low-level details of how
 to obtain that data, or the particular JSON structures that it comes in.

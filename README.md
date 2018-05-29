@@ -19,22 +19,23 @@ representation of that data rather than exchange specific ones.
 ### Exchanges
 
 The curret exchanges api supported are:
-- [bitbay](https://bitbay.net/en)
-- [bitfinex](https://www.bitfinex.com/)
-- [bitflyer](https://bitflyer.com/en-us/)
-- [bitmex](https://www.bitmex.com/)
-- [bitstamp](https://www.bitstamp.net/)
-- [bittrex](https://bittrex.com/)
-- [cex](https://cex.io/)
-- [coinbase](https://www.coinbase.com/)
-- [gatecoin](https://gatecoin.com/)
-- [gdax](https://www.gdax.com/)
-- [gemin](https://gemini.com/)
-- [hitbtc](https://hitbtc.com/)
-- [kraken](https://www.kraken.com/)
-- [liqui](https://liqui.io/)
-- [okcoin](https://www.okcoin.com/)
-- [poloniex](https://poloniex.com/) [API]()
+
+| #  | Exchange                                | API     |
+|----|-----------------------------------------|---------|
+| 01 | [bitbay](https://bitbay.net/en)         | [API]() |
+| 02 | [bitfinex](https://www.bitfinex.com/)   | [API]() |
+| 03 | [bitflyer](https://bitflyer.com/en-us/) | [API]() |
+| 04 | [bitmex](https://www.bitmex.com/)       | [API]() |
+| 05 | [bitstamp](https://www.bitstamp.net/)   | [API]() |
+| 06 | [bittrex](https://bittrex.com/)         | [API]() |
+| 07 | [cex](https://cex.io/)                  | [API]() |
+| 08 | [coinbase](https://www.coinbase.com/)   | [API]() |
+| 09 | [gdax](https://www.gdax.com/)           | [API]() |
+| 10 | [gemin](https://gemini.com/)            | [API]() |
+| 11 | [hitbtc](https://hitbtc.com/)           | [API]() |
+| 12 | [kraken](https://www.kraken.com/)       | [API]() | 
+| 13 | [okcoin](https://www.okcoin.com/)       | [API]() |
+| 14 | [poloniex](https://poloniex.com/)       | [API]() |
 
 ### Coindesk api
 

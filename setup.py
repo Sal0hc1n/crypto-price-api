@@ -4,7 +4,8 @@
 from setuptools import setup
 
 setup(
-    name='crypto-price-api',
+    name='crypto
+    -price-api',
     version='0.1',
     author='The Internet',
     url='https://github.com/Sal0hc1n/crypto-price-api',

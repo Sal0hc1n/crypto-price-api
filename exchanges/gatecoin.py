@@ -1,4 +1,4 @@
-from exchanges.base import Exchange
+from exchanges.tools.base import Exchange
 import time, base64, hmac, json, hashlib, requests
 
 class GateCoin(Exchange):

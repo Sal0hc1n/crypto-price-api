@@ -1,6 +1,6 @@
-import exchanges
+from exchanges.bitmex import BitMEX
 
-e = exchanges.get_exchange('bitmex')
+e = bitMEX
 spot_sym = 'XBTUSD'
 fut_sym = 'XBTH18'
 e.init_symbol(spot_sym)

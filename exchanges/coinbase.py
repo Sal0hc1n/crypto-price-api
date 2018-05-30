@@ -1,8 +1,7 @@
+from exchanges.tools.base import Exchange
+from exchanges.tools.helpers import get_response
+
 from decimal import Decimal
-
-from exchanges.base import Exchange
-from exchanges.helpers import get_response
-
 
 class Coinbase(Exchange):
 

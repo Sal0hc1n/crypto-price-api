@@ -4,7 +4,9 @@ from exchanges.bitflyer import BitFlyer
 from exchanges.bitmex import BitMEX
 from exchanges.bitstamp import Bitstamp
 from exchanges.bittrex import Bittrex
-from exchanges.cexio import CexIO
+from exchanges.cex import Cex
+from exchanges.coinbase import Coinbase
+from exchanges.coindesk import CoinDesk
 from exchanges.gatecoin import GateCoin
 from exchanges.gdax import GDAX
 from exchanges.gemini import Gemini
@@ -20,7 +22,9 @@ exchange_list = {
     'bitflyer' : BitFlyer,
     'bitstamp' : Bitstamp,
     'bittrex' : Bittrex,
-    'cex.io' : CexIO,
+    'cex' : Cex,
+    'coinbase' : Coinbase,
+    'coindesk' : CoinDesk,
     'gatecoin' : GateCoin,
     'gdax' : GDAX,
     'gemini' : Gemini,
@@ -82,4 +86,3 @@ def get_all_quotes(underlyingList = []):
                 bid = e.get_quote(underlying, 'bid')
                 ask = e.get_quote(underlying, 'ask')
                 print("%s on %s: BID: %s, ASK: %s, LAST: %s" % (underlying, exchange, bid, ask, last))
-

@@ -1,10 +1,11 @@
+from exchanges.tools.base import Exchange
+from exchanges.tools.ws import Exchange_WebSocket
+
 from decimal import Decimal
 
 import time, base64, hmac, json, hashlib, requests, uuid
 from urllib.parse import urlparse
 
-from exchanges.base import Exchange
-from exchanges.ws import Exchange_WebSocket
 import logging
 
 

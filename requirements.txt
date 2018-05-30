@@ -6,3 +6,4 @@ twilio>=6.9.1
 pytelegrambotapi>=3.5.1
 SQLAlchemy>=1.2.0b3
 apscheduler>=3.4.0
+websocket>0.2.1

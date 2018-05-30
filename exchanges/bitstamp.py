@@ -1,4 +1,4 @@
-from exchanges.base import Exchange
+from exchanges.tools.base import Exchange
 
 class Bitstamp(Exchange):
 

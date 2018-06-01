@@ -20,22 +20,22 @@ representation of that data rather than exchange specific ones.
 
 The curret exchanges api supported are:
 
-| #  | Exchange                                | API     |
-|----|-----------------------------------------|---------|
-| 01 | [bitbay](https://bitbay.net/en)         | [API]() |
-| 02 | [bitfinex](https://www.bitfinex.com/)   | [API]() |
-| 03 | [bitflyer](https://bitflyer.com/en-us/) | [API]() |
-| 04 | [bitmex](https://www.bitmex.com/)       | [API]() |
-| 05 | [bitstamp](https://www.bitstamp.net/)   | [API]() |
-| 06 | [bittrex](https://bittrex.com/)         | [API]() |
-| 07 | [cex](https://cex.io/)                  | [API]() |
-| 08 | [coinbase](https://www.coinbase.com/)   | [API]() |
-| 09 | [gdax](https://www.gdax.com/)           | [API]() |
-| 10 | [gemin](https://gemini.com/)            | [API]() |
-| 11 | [hitbtc](https://hitbtc.com/)           | [API]() |
-| 12 | [kraken](https://www.kraken.com/)       | [API]() | 
-| 13 | [okcoin](https://www.okcoin.com/)       | [API]() |
-| 14 | [poloniex](https://poloniex.com/)       | [API]() |
+| #  |  Exchange                               |  API                                          |
+|----|-----------------------------------------|-----------------------------------------------|
+| 01 | [bitbay](https://bitbay.net/en)         | [API](https://bitbay.net/en/public-api)       |
+| 02 | [bitfinex](https://www.bitfinex.com/)   | [API](https://docs.bitfinex.com/docs)         |
+| 03 | [bitflyer](https://bitflyer.com/en-us/) | [API](https://bitflyer.com/en-eu/api)         |
+| 04 | [bitmex](https://www.bitmex.com/)       | [API](https://www.bitmex.com/app/apiOverview) |
+| 05 | [bitstamp](https://www.bitstamp.net/)   | [API](https://www.bitstamp.net/api/)          |
+| 06 | [bittrex](https://bittrex.com/)         | [API](https://tinyurl.com/y9nw7j9x)           |
+| 07 | [cex](https://cex.io/)                  | [API](https://cex.io/cex-api)                 |
+| 08 | [coinbase](https://www.coinbase.com/)   | [API](https://developers.coinbase.com/)       |
+| 09 | [gdax](https://www.gdax.com/)           | [API](https://docs.gdax.com/)                 |
+| 10 | [gemin](https://gemini.com/)            | [API](https://docs.gemini.com/rest-api/)      |
+| 11 | [hitbtc](https://hitbtc.com/)           | [API](https://api.hitbtc.com/)                |
+| 12 | [kraken](https://www.kraken.com/)       | [API](https://www.kraken.com/help/api)        | 
+| 13 | [okcoin](https://www.okcoin.com/)       | [API](https://www.okcoin.cn/rest_api.html)    |
+| 14 | [poloniex](https://poloniex.com/)       | [API](https://poloniex.com/support/api/)      |
 
 ### Coindesk api
 

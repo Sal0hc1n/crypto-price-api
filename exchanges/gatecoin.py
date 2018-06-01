@@ -2,7 +2,7 @@ from exchanges.tools.base import Exchange
 import time, base64, hmac, json, hashlib, requests
 
 class GateCoin(Exchange):
-
+    name = 'gatecoin'
     TICKER_URL = 'https://api.gatecoin.com/Public/LiveTickers'
     API_URL = 'https://api.gatecoin.com/'
     UNDERLYING_DICT = {
@@ -233,4 +233,3 @@ class GateCoin(Exchange):
             return balance
         else:
             return data['responseStatus']['message']
-

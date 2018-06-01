@@ -1,7 +1,7 @@
 from exchanges.tools.base import Exchange
 
 class GDAX(Exchange):
-
+    name = 'gdax'
     TICKER_URL = 'https://api.gdax.com/products/%s/ticker'
     UNDERLYING_DICT = {
         'BTCUSD' : 'BTC-USD',

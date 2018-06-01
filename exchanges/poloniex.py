@@ -1,7 +1,7 @@
 from exchanges.tools.base import Exchange
 
 class Poloniex(Exchange):
-
+    name = 'polinex'
     TICKER_URL = 'https://poloniex.com/public?command=returnTicker'
     UNDERLYING_DICT = {
         'BTCUSDT' : 'USDT_BTC',

@@ -1,7 +1,7 @@
 from exchanges.tools.base import Exchange
 
 class Bitstamp(Exchange):
-
+    name = 'bitstamp'
     TICKER_URL = 'https://bitstamp.net/api/v2/ticker/%s/'
     UNDERLYING_DICT = {
         'BTCUSD' : 'btcusd',

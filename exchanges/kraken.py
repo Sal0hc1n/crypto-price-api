@@ -1,7 +1,7 @@
 from exchanges.tools.base import Exchange
 
 class Kraken(Exchange):
-
+    name = 'kraken'
     TICKER_URL = 'https://api.kraken.com/0/public/Ticker?pair=%s'
     UNDERLYING_DICT = {
         'BTCUSD' : 'XXBTZUSD',

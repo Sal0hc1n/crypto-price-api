@@ -1,7 +1,7 @@
 from exchanges.tools.base import Exchange
 
 class Bittrex(Exchange):
-
+    name = 'bittrex'
     TICKER_URL = 'https://bittrex.com/api/v1.1/public/getticker?market=%s'
     UNDERLYING_DICT = {
         'BTCUSDT' : 'USDT-BTC',

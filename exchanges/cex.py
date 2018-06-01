@@ -1,7 +1,7 @@
 from exchanges.tools.base import Exchange
 
 class Cex(Exchange):
-
+    name = 'cex'
     TICKER_URL = 'https://cex.io/api/ticker/%s'
     UNDERLYING_DICT = {
         'BTCUSD' : 'BTC/USD',

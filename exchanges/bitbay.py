@@ -1,7 +1,7 @@
 from exchanges.tools.base import Exchange
 
 class BitBay(Exchange):
-
+    name = 'bitbay'
     TICKER_URL = 'https://bitbay.net/API/Public/%s/ticker.json'
     UNDERLYING_DICT = {
         'BTCUSD' : 'BTCUSD',

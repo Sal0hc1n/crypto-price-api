@@ -10,7 +10,8 @@ import logging
 
 
 class BitMEX(Exchange):
-    TICKER_URL = 'https://www.bitmex.com/api/v1/'
+    name = 'bitmex'
+    TICKER_URL = 'https://www.bitmex.com/api/v1/quote'
     WS_TICKER_URL = 'https://www.bitmex.com/api/v1/'
     stream = {}
 

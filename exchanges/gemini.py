@@ -7,7 +7,7 @@ from decimal import Decimal
 
 
 class Gemini(Exchange):
-
+    name = 'gemini'
     TICKER_URL = 'https://api.gemini.com/v1/pubticker/btcusd'
     UNDERLYING_DICT = {
         'BTCUSD' : 'btcusd',

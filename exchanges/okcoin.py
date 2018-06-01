@@ -1,14 +1,13 @@
-from exchanges.tools.base import Exchange, FuturesExchange, date_stamp, time_stamp
+from exchanges.tools.base import Exchange, date_stamp, time_stamp
 from exchanges.tools.helpers import get_response, get_datetime
 
 from decimal import Decimal
 
-import dateutil.parser
 import requests
 import datetime
 
 class OKCoin(Exchange):
-
+    name = 'okcoin'
     TICKER_URL = 'https://www.okcoin.com/api/v1/ticker.do?symbol=%s'
     UNDERLYING_DICT = {
         'BTCUSD' : 'btc_usd',

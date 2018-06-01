@@ -2,7 +2,7 @@ from exchanges.tools.base import Exchange
 
 
 class Bitfinex(Exchange):
-
+    name = 'bitfinex'
     TICKER_URL = 'https://api.bitfinex.com/v1/pubticker/%s'
     UNDERLYING_DICT = {
         'BTCUSD' : 'btcusd',
@@ -27,5 +27,3 @@ class Bitfinex(Exchange):
     @classmethod
     def _quote_extractor(cls, data, underlying, quote):
         return data.get(cls.QUOTE_DICT[quote])
-
-

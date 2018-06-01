@@ -1,7 +1,7 @@
 from exchanges.tools.base import Exchange
 
 class HitBTC(Exchange):
-
+    name = 'hitbtc'
     TICKER_URL = 'https://api.hitbtc.com/api/1/public/%s/ticker'
     UNDERLYING_DICT = {
         'BTCUSD' : 'BTCUSD',

@@ -2,6 +2,7 @@ from exchanges.tools.base import Exchange
 
 class BitFlyer(Exchange):
 
+    name = 'bitflyer'
     TICKER_URL = 'https://api.bitflyer.jp/v1/ticker/?product_code=%s'
     UNDERLYING_DICT = {
         'ETHBTC' : 'ETH_BTC',

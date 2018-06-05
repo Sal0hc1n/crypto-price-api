@@ -20,7 +20,11 @@ retriever(Bitstamp(), 'BTCUSD')
 retriever(Bittrex(), 'BTCUSDT')
 retriever(Cex(), 'BTCUSD')
 #coinbase
+price = Coinbase().get_current_price()
+print('Coindesk:', str(price))
 #CoinDesk
+price = CoinDesk().get_current_price()
+print('CoinDesk:', str(price))
 retriever(GateCoin(), 'BTCUSD')
 retriever(GDAX(), 'BTCUSD')
 retriever(Gemini(), 'BTCUSD')

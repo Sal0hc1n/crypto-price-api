@@ -15,6 +15,10 @@ class BitMEX(Exchange):
     WS_TICKER_URL = 'https://www.bitmex.com/api/v1/'
     stream = {}
 
+    UNDERLYING_DICT = {
+        'XBTUSD' : 'XBTUSD',
+    }
+
     QUOTE_DICT = {
         'bid': 'bidPrice',
         'ask': 'askPrice'

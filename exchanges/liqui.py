@@ -1,7 +1,7 @@
 from exchanges.tools.base import Exchange
 
 class Liqui(Exchange):
-
+    name = 'liqui'
     TICKER_URL = 'https://api.liqui.io/api/3/ticker/%s'
     UNDERLYING_DICT = {
         'ETHBTC' : 'eth_btc',

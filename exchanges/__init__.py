@@ -24,7 +24,6 @@ exchange_list = {
     'bittrex' : Bittrex,
     'cex' : Cex,
     'coinbase' : Coinbase,
-    'coindesk' : CoinDesk,
     'gatecoin' : GateCoin,
     'gdax' : GDAX,
     'gemini' : Gemini,
@@ -75,12 +74,12 @@ def get_all_quotes(underlyingList = []):
         exchangeList = list(set(exchangeList))
     print(exchangeList)
     for exchange in exchangeList:
+        print(exchange)
         e = get_exchange(exchange)
         if e.get_supported_underlyings() == []:
             print("%s has no supported underlyings" % exchange)
         else:
-            if underlyingList == []:
-                underlyingList = e.get_supported_underlyings()
+            underlyingList = e.get_supported_underlyings()
             for underlying in underlyingList:
                 last = e.get_quote(underlying, 'last')
                 bid = e.get_quote(underlying, 'bid')

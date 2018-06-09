@@ -1,6 +1,10 @@
 from exchanges import *
 import sys
 
+print(get_all_quotes())
+
+
+"""
 def retriever(exchange, currency):
     bid = exchange.get_quote(currency, 'bid')
     sys.stdout.write(exchange.name + ' - ' + currency + ':\n')
@@ -13,7 +17,6 @@ def retriever(exchange, currency):
     sys.stdout.flush()
 
 #bitmex
-
 retriever(BitBay(), 'BTCUSD')
 retriever(Bitfinex(), 'BTCUSD')
 retriever(BitFlyer(), 'ETHBTC')
@@ -34,3 +37,4 @@ retriever(HitBTC(), 'BTCUSD')
 retriever(Kraken(), 'BTCUSD')
 retriever(OKCoin(), 'BTCUSD')
 retriever(Poloniex(), 'BTCUSDT')
+"""
